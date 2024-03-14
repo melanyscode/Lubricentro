@@ -1,0 +1,12 @@
+Controller\GestionOperarios.class
+Objetos\Producto.class
+Objetos\Vehiculo.class
+Objetos\Operario.class
+Conexiones\ConexionBD.class
+Controller\GestionComprayVenta.class
+Controller\GestionTrabajos.class
+com\mycompany\lubricentro\Lubricentro.class
+Controller\GestionProductos.class
+Controller\GestionVehiculos.class
+Controller\GestionClientes.class
+Objetos\Cliente.class
