@@ -32,8 +32,8 @@ public class GestionTrabajos {
         
     }
     
-    public void menuProductos(){
-        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Volver"};
+    public void menuTrabajos(){
+        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Mostrar", "Volver"};
         int opc;
         do {  
             opc = Menu.Menu("Inventario de Reparaciones", "Elija una opción", opcs, "Agregar");
@@ -51,6 +51,9 @@ public class GestionTrabajos {
                     buscar();
                     break;
                 case 4:
+                    mostrar();
+                    break;
+                case 5:
                     Lubricentro.Lubricentro.Inicio();
             }
         } while (opc != opcs.length);
