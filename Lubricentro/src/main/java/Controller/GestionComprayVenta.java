@@ -4,10 +4,43 @@
  */
 package Controller;
 
+import ModuloCompraVenta.Cola;
+import Objetos.Producto;
+
 /**
  *
  * @author Melanie Gutierrez
  */
 public class GestionComprayVenta {
+    public static Cola listaCompra = new Cola();
+    public static Cola listaVenta = new Cola();
     
+    Producto p = new Producto();
+    
+    public void agregarCarrito(){
+        
+    }
+    
+    public void realizarCompra(){
+        
+    }
+    
+    public void Ventas(){
+        String[] opcs = {"Agregar al carrito", "Realizar compra", "Volver"};
+        int opc;
+        do {  
+            opc = Menu.Menu("Menú Ventas", "Lubricentro", opcs, "Inventario");
+            switch(opc){
+                case 0:
+                    agregarCarrito();
+                    break;
+                case 1: 
+                    realizarCompra();
+                    break;
+                case 2: 
+                    Lubricentro.Lubricentro.Inicio();
+                    break;
+            }
+        } while (opc != opcs.length);
+    }
 }
