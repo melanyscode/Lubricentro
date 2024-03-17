@@ -10,4 +10,5 @@ package ModuloInventario;
  */
 public class ListaCircular {
     
+    
 }
