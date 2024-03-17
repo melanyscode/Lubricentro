@@ -3,14 +3,17 @@ Objetos\Vehiculo.class
 Objetos\Operario.class
 Controller\GestionComprayVenta.class
 Controller\GestionTrabajos.class
+ModuloInventario\ListasCirculares.class
 Controller\GestionProductos.class
 ModuloInventario\NodoLista.class
 Controller\GestionClientes.class
 ModuloCompraVenta\Cola.class
 Controller\GestionOperarios.class
+Conexiones\ConexionBD.class
 Controller\Menu.class
 BD\Conexion.class
 Objetos\TrabajoRealizado.class
+ModuloInventario\ListaDinamica.class
 ModuloInventario\ListaCircular.class
 ModuloCompraVenta\NodoCola.class
 Controller\GestionVehiculos.class
