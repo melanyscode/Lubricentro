@@ -8,8 +8,8 @@ ModuloInventario\NodoLista.class
 Controller\GestionClientes.class
 ModuloCompraVenta\Cola.class
 Controller\GestionOperarios.class
+Conexiones\ConexionBD.class
 Controller\Menu.class
-BD\Conexion.class
 Objetos\TrabajoRealizado.class
 ModuloInventario\ListaCircular.class
 ModuloCompraVenta\NodoCola.class
