@@ -127,7 +127,7 @@ public class ListaCircular {
                 preState.setString(1, p.getNombre());
                 preState.setString(2, p.getDescripcion());
                 preState.setDouble(3, p.getPrecio());
-                preState.setInt(3, p.getCategoriaId());
+                preState.setInt(4, p.getCategoriaId());
 
                 preState.executeUpdate();
 
