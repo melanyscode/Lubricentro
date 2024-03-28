@@ -4,48 +4,97 @@
  */
 package Controller;
 
+import Conexiones.ConexionBD;
 import ModuloInventario.ListaCircular;
 import Objetos.Producto;
+import javax.swing.JOptionPane;
+import java.sql.*;
 
 /**
  *
  * @author Melanie Gutierrez
  */
 public class GestionProductos {
+
     public static ListaCircular listaProductos = new ListaCircular();
     Producto p = new Producto();
-    
-    private void agregar(){
+    ConexionBD conexion = new ConexionBD();
+
+    private void agregar() {
         //logica para insertar (pedir al usuario la informacion del producto y despues agregarla a la lista circular
+
+        int idAux = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID del producto"));
+
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM producto WHERE id = " + idAux);
+            ResultSet consulta = conexion.getResultado();
+
+            if (consulta != null && consulta.next()) {
+                JOptionPane.showMessageDialog(null, "El producto ya esta en el inventario, intente actualizar el producto o agregar un producto nuevo");
+            } else {
+                String nombre= "";
+                String descripcion = "";
+                double precio=0;
+                int idCat=0;
+                
+                while (true) {
+                    nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
+                    if(nombre == null){
+                        agregar();
+                        break;
+                    }
+                    descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
+                    if(descripcion == null){
+                        agregar();
+                        break;
+                    }
+                    precio = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el precio del producto"));
+                    
+                    idCat = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID de categoría"));
+                }
+                Producto p1 = new Producto(nombre, descripcion, precio, idCat);
+                listaProductos.agregar(p1);
+                listaProductos.agregarListaBD(listaProductos);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        } finally {
+            conexion.cerrarConexion();
+        }
+
     }
-    private void buscar(){
-        
-        
+
+    private void buscar() {
+
     }
-    private void mostrar(){
-        
+
+    private void mostrar() {
+
     }
-    private void actualizar(){
-        
+
+    private void actualizar() {
+
     }
-    
-    private void eliminar(){
-        
+
+    private void eliminar() {
+
     }
-    
-    public void menuProductos(){
+
+    public void menuProductos() {
         String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Volver"};
         int opc;
-        do {  
+        do {
             opc = Menu.Menu("Inventario Productos", "Elija una opción", opcs, "Agregar");
-            switch(opc){
+            switch (opc) {
                 case 0:
                     agregar();
                     break;
-                case 1: 
+                case 1:
                     eliminar();
                     break;
-                case 2: 
+                case 2:
                     actualizar();
                     break;
                 case 3:
@@ -56,5 +105,5 @@ public class GestionProductos {
             }
         } while (opc != opcs.length);
     }
-    
+
 }
