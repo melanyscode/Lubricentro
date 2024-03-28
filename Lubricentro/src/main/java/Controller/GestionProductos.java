@@ -27,16 +27,32 @@ public class GestionProductos {
 
         try {
             conexion.setConexion();
-            conexion.setConsulta("SELECT * FROM productos WHERE id = " + idAux);
+            conexion.setConsulta("SELECT * FROM producto WHERE id = " + idAux);
             ResultSet consulta = conexion.getResultado();
 
             if (consulta != null && consulta.next()) {
                 JOptionPane.showMessageDialog(null, "El producto ya esta en el inventario, intente actualizar el producto o agregar un producto nuevo");
-            }else{
-                String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
-                String descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
-                double precio = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el precio del producto"));
-                int idCat = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID de categoría"));
+            } else {
+                String nombre= "";
+                String descripcion = "";
+                double precio=0;
+                int idCat=0;
+                
+                while (true) {
+                    nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
+                    if(nombre == null){
+                        agregar();
+                        break;
+                    }
+                    descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
+                    if(descripcion == null){
+                        agregar();
+                        break;
+                    }
+                    precio = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el precio del producto"));
+                    
+                    idCat = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID de categoría"));
+                }
                 Producto p1 = new Producto(nombre, descripcion, precio, idCat);
                 listaProductos.agregar(p1);
                 listaProductos.agregarListaBD(listaProductos);
