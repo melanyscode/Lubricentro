@@ -27,35 +27,56 @@ public class GestionProductos {
 
         try {
             conexion.setConexion();
-            conexion.setConsulta("SELECT * FROM producto WHERE id = " + idAux);
+            conexion.setConsulta("SELECT * FROM producto WHERE id_producto = " + idAux);
             ResultSet consulta = conexion.getResultado();
 
             if (consulta != null && consulta.next()) {
                 JOptionPane.showMessageDialog(null, "El producto ya esta en el inventario, intente actualizar el producto o agregar un producto nuevo");
             } else {
-                String nombre= "";
+                String nombre = "";
                 String descripcion = "";
-                double precio=0;
-                int idCat=0;
-                
+                double precio = 0;
+                int stock = 0;
+
                 while (true) {
                     nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
-                    if(nombre == null){
-                        agregar();
+                    if (nombre == null) {
+                        menuProductos();
                         break;
                     }
                     descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
-                    if(descripcion == null){
-                        agregar();
+                    if (descripcion == null) {
+                        menuProductos();
                         break;
                     }
-                    precio = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el precio del producto"));
-                    
-                    idCat = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID de categoría"));
+                    String input = JOptionPane.showInputDialog(null, "Ingrese el precio del producto");
+                    if (input == null) {
+                        menuProductos();
+                        break;
+                    } else {
+                        try {
+                            precio = Double.parseDouble(input);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+                        }
+                    }
+                    String stockInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias");
+                    if (stockInput == null) {
+                        menuProductos();
+                        break;
+                    } else {
+                        try {
+                            stock = Integer.parseInt(stockInput);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+                        }
+                    }
+                    break;
                 }
-                Producto p1 = new Producto(nombre, descripcion, precio, idCat);
+                Producto p1 = new Producto(nombre, descripcion, precio, stock);
                 listaProductos.agregar(p1);
                 listaProductos.agregarListaBD(listaProductos);
+                
             }
 
         } catch (Exception e) {

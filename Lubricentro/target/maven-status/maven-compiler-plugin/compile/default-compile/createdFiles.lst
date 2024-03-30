@@ -15,4 +15,5 @@ ModuloInventario\ListaCircular.class
 ModuloCompraVenta\NodoCola.class
 Controller\GestionVehiculos.class
 Lubricentro\Lubricentro.class
+.netbeans_automatic_build
 Objetos\Cliente.class

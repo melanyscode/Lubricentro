@@ -118,16 +118,17 @@ public class ListaCircular {
         PreparedStatement preState = null;
         try {
             conexion.setConexion();
-            conexion.setConsulta("INSERT INTO productos (nombre, descripcion, precio, categoria_id) VALUES (?,?,?,?)");
+            conexion.setConsulta("INSERT INTO producto (id_categoria, descripcion, detalle, precio, existencias) VALUES (?,?,?,?,?)");
             preState = conexion.getConsulta();
 
             NodoLista aux = inicio;
             do {
                 Producto p = aux.getProducto();
-                preState.setString(1, p.getNombre());
-                preState.setString(2, p.getDescripcion());
-                preState.setDouble(3, p.getPrecio());
-                preState.setInt(4, p.getCategoriaId());
+                preState.setInt(1, p.getCategoriaId());
+                preState.setString(2, p.getNombre());
+                preState.setString(3, p.getDescripcion());
+                preState.setDouble(4, p.getPrecio());
+                preState.setInt(5, p.getStock());
 
                 preState.executeUpdate();
 
