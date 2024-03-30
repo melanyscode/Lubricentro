@@ -76,7 +76,7 @@ public class GestionProductos {
                 Producto p1 = new Producto(nombre, descripcion, precio, stock);
                 listaProductos.agregar(p1);
                 listaProductos.agregarListaBD(listaProductos);
-                
+
             }
 
         } catch (Exception e) {
@@ -88,7 +88,29 @@ public class GestionProductos {
     }
 
     private void buscar() {
+        int id = 0;
+        String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea buscar");
+        if (idInput == null) {
+            menuProductos();
+        } else {
+            try {
+                id = Integer.parseInt(idInput);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+            }
+        }
 
+        try {
+            conexion.setConexion();
+            listaProductos.agregarBDaLista();
+            Producto p = listaProductos.buscarId(id);
+            JOptionPane.showMessageDialog(null, p.toString());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        } finally {
+            conexion.cerrarConexion();
+        }
     }
 
     private void mostrar() {

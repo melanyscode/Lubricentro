@@ -15,6 +15,7 @@ public class Producto {
     private double precio;
     private int stock;
     private int categoriaId;
+    private boolean activo; 
 
     public Producto() {
     }
@@ -28,6 +29,17 @@ public class Producto {
         this.categoriaId = 2;
         this.stock = stock;
     }
+
+    public Producto(int id, String nombre, String descripcion, double precio, int stock, int categoriaId, boolean activo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.stock = stock;
+        this.categoriaId = categoriaId;
+        this.activo = activo;
+    }
+    
 
     public int getCategoriaId() {
         return categoriaId;
@@ -75,6 +87,14 @@ public class Producto {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
       @Override
     public String toString() {

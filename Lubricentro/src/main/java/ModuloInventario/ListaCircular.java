@@ -5,6 +5,7 @@
 package ModuloInventario;
 
 import Conexiones.ConexionBD;
+import static Controller.GestionProductos.listaProductos;
 import Objetos.Producto;
 import javax.swing.JOptionPane;
 import java.sql.*;
@@ -80,6 +81,14 @@ public class ListaCircular {
         }
         JOptionPane.showMessageDialog(null, "Producto no eliminado, no se encontro en el inventario");
     }
+    
+    public void vaciarLista(){
+        while(inicio != null){
+            NodoLista siguiente = inicio.getSiguiente();
+            inicio = null;
+            inicio = siguiente; 
+        }
+    }
 
     public void actualizar(int id, Producto p) {
         if (isEmpty()) {
@@ -138,7 +147,7 @@ public class ListaCircular {
             JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
         } finally {
             try {
-                if(preState != null){
+                if (preState != null) {
                     preState.close();
                 }
                 conexion.cerrarConexion();
@@ -148,4 +157,36 @@ public class ListaCircular {
         }
     }
 
+    public void agregarBDaLista() {
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM producto");
+            preState = conexion.getConsulta();
+            ResultSet consulta = preState.executeQuery();
+            while (consulta.next()) {
+                int id = consulta.getInt("id_producto");
+                int categoria = consulta.getInt("id_categoria");
+                String descripcion = consulta.getString("descripcion");
+                String detalle = consulta.getString("detalle");
+                double precio = consulta.getDouble("precio");
+                int stock = consulta.getInt("existencias");
+                boolean activo = consulta.getBoolean("activo");
+                Producto p = new Producto(id, descripcion, detalle, precio, categoria, stock, activo);
+                listaProductos.agregar(p);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+    }
 }
