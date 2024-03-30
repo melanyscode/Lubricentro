@@ -114,8 +114,7 @@ public class GestionProductos {
             Producto p = listaProductos.buscarId(id); // como toda la info de la BD ahora esta en la lista se puede usar el metodo de buscar por id en la lista
             JOptionPane.showMessageDialog(null, p.toString());
             listaProductos.vaciarLista();
-            System.out.println(listaProductos.isEmpty());
-            System.out.println(listaProductos.toString());
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e);
         } finally {
@@ -128,6 +127,12 @@ public class GestionProductos {
     }
 
     private void eliminar() {
+        
+        /** IMPORTANTE
+         * 
+         * cuando se elimna un producto el id de ese producto ya no se asigna a otro producto que se agrege a la BD **/
+        
+
         //pedir el id del producto a eliminar
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea eliminar");
@@ -150,7 +155,7 @@ public class GestionProductos {
             if(input == 0){
                 listaProductos.eliminar(id);
                 //vaciar la lista de productos
-              listaProductos.vaciarLista();
+                listaProductos.vaciarLista();
                 
                 //consulta para eliminarla de la BD
                 

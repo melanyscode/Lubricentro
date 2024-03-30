@@ -90,6 +90,7 @@ public class ListaCircular {
     }
 
     public void vaciarLista() {
+        
         NodoLista actual = inicio;
         NodoLista temp;
         do {
