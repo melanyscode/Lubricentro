@@ -63,31 +63,43 @@ public class ListaCircular {
     public void eliminar(int id) {
         if (isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay productos en el inventario");
-        }
-        NodoLista aux = inicio;
-        while (aux != null) {
-            if (aux.getProducto().getId() == id) {
-                if (aux == inicio) {
-                    inicio = aux.getSiguiente();
+        } else {
+            NodoLista actual = inicio;
+            do {
+                //comprobar si el elemento es el que se estabuscando
+                if (actual.getProducto().getId() == id) {
+                    if (actual == inicio) {
+                        inicio = actual.getSiguiente();
+                        if (inicio == actual) {
+                            inicio = null;
+                        } else {
+                            inicio.setAnterior(actual.getAnterior());
+                            actual.getAnterior().setSiguiente(inicio);
+                        }
+                    } else {
+                        actual.getAnterior().setSiguiente(actual.getSiguiente());
+                        actual.getSiguiente().setAnterior(actual.getAnterior());
+                    }
+                    return;
                 }
-                if (inicio == aux) {
-                    inicio = null;
-                } else {
-                    aux.getAnterior().setSiguiente(aux.getSiguiente());
-                    aux.getSiguiente().setAnterior(aux.getAnterior());
-                }
-            }
-            aux = aux.getSiguiente();
+                actual = actual.getSiguiente();
+            } while (actual != null);
         }
+
         JOptionPane.showMessageDialog(null, "Producto no eliminado, no se encontro en el inventario");
     }
-    
-    public void vaciarLista(){
-        while(inicio != null){
-            NodoLista siguiente = inicio.getSiguiente();
-            inicio = null;
-            inicio = siguiente; 
-        }
+
+    public void vaciarLista() {
+        NodoLista actual = inicio;
+        NodoLista temp;
+        do {
+            temp = actual;
+            actual = actual.getSiguiente();
+            temp.setAnterior(null);
+            temp.setSiguiente(null);
+            
+        } while (actual != inicio);
+        inicio = null;
     }
 
     public void actualizar(int id, Producto p) {
