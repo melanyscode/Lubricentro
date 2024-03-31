@@ -90,7 +90,7 @@ public class ListaCircular {
     }
 
     public void vaciarLista() {
-        
+
         NodoLista actual = inicio;
         NodoLista temp;
         do {
@@ -98,7 +98,7 @@ public class ListaCircular {
             actual = actual.getSiguiente();
             temp.setAnterior(null);
             temp.setSiguiente(null);
-            
+
         } while (actual != inicio);
         inicio = null;
     }
@@ -112,10 +112,12 @@ public class ListaCircular {
             if (aux.getProducto().getId() == id) {
                 aux.setProducto(p);
                 JOptionPane.showMessageDialog(null, "El Prodcuto con ID: " + id + " ha sido modificado");
+            } else {
+                JOptionPane.showMessageDialog(null, "El producto con ID: " + id + " no se encuentra en el inventario");
             }
             aux = aux.getSiguiente();
         }
-        JOptionPane.showMessageDialog(null, "El producto con ID: " + id + " no se encuentra en el inventario");
+
     }
 
     @Override
@@ -185,7 +187,7 @@ public class ListaCircular {
                 double precio = consulta.getDouble("precio");
                 int stock = consulta.getInt("existencias");
                 boolean activo = consulta.getBoolean("activo");
-                Producto p = new Producto(id, descripcion, detalle, precio, categoria, stock, activo);
+                Producto p = new Producto(id, descripcion, detalle, precio, stock, categoria, activo);
                 listaProductos.agregar(p);
             }
 
