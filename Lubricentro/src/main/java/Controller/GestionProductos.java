@@ -22,8 +22,17 @@ public class GestionProductos {
 
     private void agregar() {
         //logica para insertar (pedir al usuario la informacion del producto y despues agregarla a la lista circular
-
-        int idAux = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID del producto"));
+        int idAux = -1;
+        String inputID = JOptionPane.showInputDialog(null, "Ingrese el ID del producto");
+        if(inputID == null){
+            menuProductos();
+        }else{
+            try {
+                 idAux = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID del producto"));
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+            }
+        }
 
         try {
             //hacer conexion y consulta a la base de datos
@@ -40,6 +49,7 @@ public class GestionProductos {
                 String descripcion = "";
                 double precio = 0;
                 int stock = 0;
+                boolean activo = true;
 
                 while (true) {
                     nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
@@ -76,10 +86,17 @@ public class GestionProductos {
                             JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
                         }
                     }
+                    String[] options = {"Disponible", "No disponible"};
+                    String activoInput = (String) JOptionPane.showInputDialog(null, "¿El producto esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                    if (activoInput.endsWith("Disponible")) {
+                        activo = true;
+                    } else {
+                        activo = false;
+                    }
                     break; //hacer un break para salir del while 
                 }
                 //Crear producto
-                Producto p1 = new Producto(nombre, descripcion, precio, stock);
+                Producto p1 = new Producto(nombre, descripcion, precio, stock, activo);
                 //agregar producto a la lsita
                 listaProductos.agregar(p1);
                 //agregar lista a la bd 
@@ -148,6 +165,7 @@ public class GestionProductos {
             String descripcion = "";
             double precio = 0;
             int stock = 0;
+            boolean activo = true;
 
             while (true) {
                 nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:", p.getNombre());
@@ -184,19 +202,27 @@ public class GestionProductos {
                         JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
                     }
                 }
+                String[] options = {"Disponible", "No disponible"};
+                String activoInput = (String) JOptionPane.showInputDialog(null, "¿El producto esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                if (activoInput.endsWith("Disponible")) {
+                    activo = true;
+                } else {
+                    activo = false;
+                }
                 break; //hacer un break para salir del while 
             }
             //actualizar producto en la lista
-            p = new Producto(nombre, descripcion, precio, stock);
+            p = new Producto(nombre, descripcion, precio, stock, activo);
             listaProductos.actualizar(id, p);
             //actualizar productos en la tabla de BD
-            conexion.setConsulta("UPDATE producto SET descripcion = ?, detalle = ?, precio = ?, existencias = ? WHERE id_producto = ?");
+            conexion.setConsulta("UPDATE producto SET descripcion = ?, detalle = ?, precio = ?, existencias = ?, activo = ? WHERE id_producto = ?");
             preState = conexion.getConsulta();
             preState.setString(1, p.getNombre());
             preState.setString(2, p.getDescripcion());
             preState.setDouble(3, p.getPrecio());
             preState.setInt(4, p.getStock());
-            preState.setInt(5, id);
+            preState.setBoolean(5, p.isActivo());
+            preState.setInt(6, id);
 
             //ejecutar la consulta
             preState.executeUpdate();
