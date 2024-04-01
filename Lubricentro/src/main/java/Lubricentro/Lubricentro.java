@@ -30,7 +30,7 @@ public class Lubricentro {
         Login();
     }
 
-    public static void Inicio() {
+    public static void InicioAdmin() {
         String[] opcs = {"Inventario", "Ventas", "Operarios", "Clientes", "Trabajos", "Salir"};
         int opc;
         do {
@@ -70,12 +70,51 @@ public class Lubricentro {
                     gestionVe.menuVehiculos();
                     break;
                 case 2:
-                    Inicio();
+                    InicioAdmin();
                     break;
             }
         } while (opc != opcs.length);
     }
-
+    
+    //lo que tiene accesos los operarios
+  public static void InicioUsuario() {
+        String[] opcs = {"Inventario", "Ventas", "Trabajos", "Salir"};
+        int opc;
+        do {
+            opc = Menu.Menu("Menu Principal", "Lubricentro", opcs, "Inventario");
+            switch (opc) {
+                case 0:
+                    InventarioUsuario();
+                    break;
+                case 1:
+                    gestionCYV.VentasU();
+                    break;
+                case 2:
+                    gestionTr.menuTrabajosU();
+                case 3:
+                    System.exit(0);
+                    break;
+            }
+        } while (opc != opcs.length);
+    }
+   public static void InventarioUsuario() {
+        String[] opcs = {"Productos", "Vehiculos", "Volver"};
+        int opc;
+        do {
+            opc = Menu.Menu("Inventario", "Elija una opcion", opcs, "Productos");
+            switch (opc) {
+                case 0:
+                    gestionP.menuProductosU();
+                    break;
+                case 1:
+                    gestionVe.menuVehiculosU();
+                    break;
+                case 2:
+                    InicioUsuario();
+                    break;
+            }
+        } while (opc != opcs.length);
+    }
     public static void Login() {
         String username = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario");
         if (username == null) {
@@ -104,9 +143,23 @@ public class Lubricentro {
             ResultSet consulta = preState.executeQuery();
 
             while (consulta.next()) {
+
                 if (username.equals(consulta.getString("username")) && contrasenia.equals(consulta.getString("password"))) {
-                    Inicio();
-                    break;
+                    int id = consulta.getInt("id_usuario");
+                    conexion.setConsulta("SELECT nombre FROM rol WHERE id_usuario = ?");
+                    preState = conexion.getConsulta();
+                    preState.setInt(1, id);
+                    ResultSet consultaRol = preState.executeQuery();
+                    while (consultaRol.next()) {
+                        String admin = "ROLE_ADMIN";
+                        String usuario = "ROLE_USER";
+                        if (consultaRol.getString("nombre").equals(admin)) {
+                            InicioAdmin();
+                        }else if(consultaRol.getString("nombre").equals(usuario)){
+                            InicioUsuario();
+                        }
+                    }
+
                 }
             }
         } catch (Exception e) {

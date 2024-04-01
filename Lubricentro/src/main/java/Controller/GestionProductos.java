@@ -300,6 +300,9 @@ public class GestionProductos {
             conexion.cerrarConexion();
         }
     }
+    public void mostrar(){
+        
+    }
 
     public void menuProductos() {
         String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Volver"};
@@ -320,9 +323,26 @@ public class GestionProductos {
                     buscar();
                     break;
                 case 4:
-                    Lubricentro.Lubricentro.Inicio();
+                    Lubricentro.Lubricentro.InicioAdmin();
             }
         } while (opc != opcs.length);
     }
 
+    public void menuProductosU() {
+        String[] opcs = {"Mostrar", "Buscar", "Volver"};
+        int opc;
+        do {
+            opc = Menu.Menu("Inventario Productos", "Elija una opción", opcs, "Agregar");
+            switch (opc) {
+                case 0:
+                    mostrar();
+                    break;
+                case 1:
+                    buscar();
+                    break;
+                case 2:
+                    Lubricentro.Lubricentro.InicioUsuario();
+            }
+        } while (opc != opcs.length);
+    }
 }

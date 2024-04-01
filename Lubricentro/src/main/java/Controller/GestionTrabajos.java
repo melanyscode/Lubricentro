@@ -54,7 +54,33 @@ public class GestionTrabajos {
                     mostrar();
                     break;
                 case 5:
-                    Lubricentro.Lubricentro.Inicio();
+                    Lubricentro.Lubricentro.InicioAdmin();
+            }
+        } while (opc != opcs.length);
+    }
+    public void menuTrabajosU(){
+        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Mostrar", "Volver"};
+        int opc;
+        do {  
+            opc = Menu.Menu("Inventario de Reparaciones", "Elija una opción", opcs, "Agregar");
+            switch(opc){
+                case 0:
+                    agregar();
+                    break;
+                case 1: 
+                    eliminar();
+                    break;
+                case 2: 
+                    actualizar();
+                    break;
+                case 3:
+                    buscar();
+                    break;
+                case 4:
+                    mostrar();
+                    break;
+                case 5:
+                    Lubricentro.Lubricentro.InicioUsuario();
             }
         } while (opc != opcs.length);
     }

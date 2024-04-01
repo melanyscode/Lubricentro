@@ -4,7 +4,7 @@
  */
 package Controller;
 
-import static Lubricentro.Lubricentro.Inicio;
+import static Lubricentro.Lubricentro.InicioAdmin;
 import Objetos.Cliente;
 
 /**
@@ -44,7 +44,7 @@ public class GestionClientes {
                     Eliminar();
                     break;
                 case 3:
-                    Inicio();
+                    InicioAdmin();
                     break;
             }
         } while (opc != opcs.length);
