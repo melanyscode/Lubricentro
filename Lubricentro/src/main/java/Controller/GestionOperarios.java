@@ -4,7 +4,7 @@
  */
 package Controller;
 
-import static Lubricentro.Lubricentro.Inicio;
+import static Lubricentro.Lubricentro.InicioAdmin;
 
 /**
  *
@@ -48,7 +48,7 @@ public class GestionOperarios {
                     Eliminar();
                     break;
                 case 4:
-                    Inicio();
+                    InicioAdmin();
                     break;
             }
         } while (opc != opcs.length);

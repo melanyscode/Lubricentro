@@ -38,7 +38,25 @@ public class GestionComprayVenta {
                     realizarCompra();
                     break;
                 case 2: 
-                    Lubricentro.Lubricentro.Inicio();
+                    Lubricentro.Lubricentro.InicioAdmin();
+                    break;
+            }
+        } while (opc != opcs.length);
+    }
+     public void VentasU(){
+        String[] opcs = {"Agregar al carrito", "Realizar compra", "Volver"};
+        int opc;
+        do {  
+            opc = Menu.Menu("Menú Ventas", "Lubricentro", opcs, "Inventario");
+            switch(opc){
+                case 0:
+                    agregarCarrito();
+                    break;
+                case 1: 
+                    realizarCompra();
+                    break;
+                case 2: 
+                    Lubricentro.Lubricentro.InicioUsuario();
                     break;
             }
         } while (opc != opcs.length);
