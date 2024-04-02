@@ -4,58 +4,64 @@
  */
 package Controller;
 
+import Conexiones.ConexionBD;
 import ModuloCompraVenta.Cola;
+import ModuloCompraVenta.ColaVenta;
 import Objetos.Producto;
+import java.sql.ResultSet;
 
 /**
  *
  * @author Melanie Gutierrez
  */
 public class GestionComprayVenta {
+
     public static Cola listaCompra = new Cola();
-    public static Cola listaVenta = new Cola();
-    
+    public static ColaVenta listaVenta = new ColaVenta();
+
     Producto p = new Producto();
-    
-    public void agregarCarrito(){
-        
+    ConexionBD conexion = new ConexionBD();
+
+    public void agregarCarrito() {
+       
     }
-    
-    public void realizarCompra(){
-        
+
+    public void realizarCompra() {
+
     }
-    
-    public void Ventas(){
+
+    public void Ventas() {
         String[] opcs = {"Agregar al carrito", "Realizar compra", "Volver"};
         int opc;
-        do {  
+        do {
             opc = Menu.Menu("Menú Ventas", "Lubricentro", opcs, "Inventario");
-            switch(opc){
+            switch (opc) {
                 case 0:
                     agregarCarrito();
                     break;
-                case 1: 
+                case 1:
                     realizarCompra();
                     break;
-                case 2: 
+                case 2:
                     Lubricentro.Lubricentro.InicioAdmin();
                     break;
             }
         } while (opc != opcs.length);
     }
-     public void VentasU(){
+
+    public void VentasU() {
         String[] opcs = {"Agregar al carrito", "Realizar compra", "Volver"};
         int opc;
-        do {  
+        do {
             opc = Menu.Menu("Menú Ventas", "Lubricentro", opcs, "Inventario");
-            switch(opc){
+            switch (opc) {
                 case 0:
                     agregarCarrito();
                     break;
-                case 1: 
+                case 1:
                     realizarCompra();
                     break;
-                case 2: 
+                case 2:
                     Lubricentro.Lubricentro.InicioUsuario();
                     break;
             }
