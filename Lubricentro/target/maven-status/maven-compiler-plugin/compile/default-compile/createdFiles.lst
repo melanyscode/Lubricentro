@@ -1,5 +1,6 @@
 Objetos\Producto.class
 Objetos\Vehiculo.class
+ModuloCompraVenta\ColaVenta.class
 Objetos\Operario.class
 Controller\GestionComprayVenta.class
 Controller\GestionTrabajos.class
@@ -7,7 +8,9 @@ Controller\GestionProductos.class
 ModuloInventario\NodoLista.class
 Controller\GestionClientes.class
 ModuloCompraVenta\Cola.class
+ModuloCompraVenta\NodoColaV.class
 Controller\GestionOperarios.class
+Objetos\Venta.class
 Conexiones\ConexionBD.class
 Controller\Menu.class
 Objetos\TrabajoRealizado.class

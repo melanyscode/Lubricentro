@@ -27,7 +27,7 @@ public class Lubricentro {
     public static GestionVehiculos gestionVe = new GestionVehiculos();
 
     public static void main(String[] args) {
-        Login();
+        Inicio();
     }
 
     public static void InicioAdmin() {
@@ -75,9 +75,9 @@ public class Lubricentro {
             }
         } while (opc != opcs.length);
     }
-    
+
     //lo que tiene accesos los operarios
-  public static void InicioUsuario() {
+    public static void InicioUsuario() {
         String[] opcs = {"Inventario", "Ventas", "Trabajos", "Salir"};
         int opc;
         do {
@@ -97,7 +97,8 @@ public class Lubricentro {
             }
         } while (opc != opcs.length);
     }
-   public static void InventarioUsuario() {
+
+    public static void InventarioUsuario() {
         String[] opcs = {"Productos", "Vehiculos", "Volver"};
         int opc;
         do {
@@ -115,6 +116,86 @@ public class Lubricentro {
             }
         } while (opc != opcs.length);
     }
+
+    //menu de inicio 
+    public static void Inicio() {
+        String[] opcs = {"Registrarse", "Iniciar sesion", "Salir"};
+        int opc;
+        do {
+            opc = Menu.Menu("Inicio", "Elija una opcion", opcs, "Registrarse");
+            switch (opc) {
+                case 0:
+                    Registro();
+                    break;
+                case 1:
+                    Login();
+                    break;
+                case 2:
+                    System.exit(0);
+                    break;
+            }
+        } while (opc != opcs.length);
+    }
+    //registro
+
+    public static void Registro() {
+        String user = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario");
+        if (user == null) {
+            Inicio();
+        }
+
+        //setear el statement 
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM usuario WHERE username = ?");
+            preState = conexion.getConsulta();
+            preState.setString(1, user);
+            ResultSet consulta = preState.executeQuery();
+            //si la consulta da un resultado entonces el usuario ya existe en la bd
+            if (consulta != null && consulta.next()) {
+                JOptionPane.showMessageDialog(null, "El usuario ya existe intente con un usuario diferente");
+                Inicio();
+            } else {
+                //sino existe se le pide la contraseña para registrar el nuevo usuario
+                String password = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario");
+                if (password == null) {
+                    Inicio();
+                }
+                if (user != null && password != null) {
+                    conexion.setConexion();
+                    conexion.setConsulta("INSERT INTO usuario (username, password) VALUES (?,?)");
+                    preState = conexion.getConsulta();
+                    preState.setString(1, user);
+                    preState.setString(2, password);
+                    preState.executeUpdate();
+
+                    //asignar rol 
+                    conexion.setConsulta("SELECT id_usuario FROM usuario WHERE username = ?");
+                    preState = conexion.getConsulta();
+                    preState.setString(1, user);
+                    ResultSet idConsulta = preState.executeQuery();
+                    if (idConsulta.next()) {
+                        int id = idConsulta.getInt("id_usuario");
+                        conexion.setConsulta("INSERT INTO rol (nombre, id_usuario) VALUES (?,?)");
+                        preState = conexion.getConsulta();
+                        preState.setString(1, "ROLE_USER");
+                        preState.setInt(2, id);
+                        preState.executeUpdate();
+                        conexion.cerrarConexion();
+                        JOptionPane.showMessageDialog(null, "Usuario registrado de manera satisfactoria");
+                    }
+                }
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        } finally {
+            conexion.cerrarConexion();
+        }
+    }
+
+    //login del sistema
     public static void Login() {
         String username = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario");
         if (username == null) {
@@ -155,7 +236,7 @@ public class Lubricentro {
                         String usuario = "ROLE_USER";
                         if (consultaRol.getString("nombre").equals(admin)) {
                             InicioAdmin();
-                        }else if(consultaRol.getString("nombre").equals(usuario)){
+                        } else if (consultaRol.getString("nombre").equals(usuario)) {
                             InicioUsuario();
                         }
                     }
