@@ -4,27 +4,25 @@
  */
 package ModuloCompraVenta;
 
-import Objetos.Producto;
+import Objetos.Venta;
 
 /**
  *
  * @author Melanie Gutierrez
  */
-public class Cola {
+public class ColaVenta {
+    NodoColaV inicio;
+    NodoColaV fin;
 
-    private NodoCola inicio;
-    private NodoCola fin;
-
-    public Cola() {
+    public ColaVenta() {
     }
-
-    //metodos de la cola
-    public boolean isEmpty() {
+    
+    public boolean isEmpty(){
         return inicio == null;
     }
-
-    public void agregar(Producto p) {
-        NodoCola nuevo = new NodoCola(p);
+    
+    public void agregar(Venta v) {
+        NodoColaV nuevo = new NodoColaV(v);
         if (isEmpty()) {
             inicio = nuevo;
         } else {
@@ -32,40 +30,38 @@ public class Cola {
         }
         fin = nuevo;
     }
-
-    public Producto desencolar() {
-        Producto aux = inicio.getProducto();
+    
+    public Venta desencolar() {
+        Venta aux = inicio.getVenta();
         inicio.setSiguiente(inicio);
         return aux;
     }
-
-    public Producto inicioCola() {
-        return inicio.getProducto();
+    
+    public Venta inicioCola(){
+        return inicio.getVenta();
     }
-
     public String imprimirCola() {
         String mensaje = "";
         if (isEmpty()) {
             mensaje += "No hay productos en la cola de compra";
         } else {
             mensaje += "Lista de Productos:\n";
-            NodoCola aux = inicio;
+            NodoColaV aux = inicio;
             while (aux != null) {
-                mensaje += aux.getProducto().getNombre() + " - ₡" + aux.getProducto().getPrecio() + "\n";
+               mensaje += aux.getVenta().toString();
                 aux = aux.getSiguiente();
             }
         }
         return mensaje;
     }
-    
     public double precioTotal(){
         double res = 0;
         if(isEmpty()){
             res = 0;
         }else{
-            NodoCola aux = inicio;
+            NodoColaV aux = inicio;
             while(aux != null){
-                res += aux.getProducto().getPrecio();
+                res += aux.getVenta().getPrecio();
                 aux = aux.getSiguiente();
             }
         }
