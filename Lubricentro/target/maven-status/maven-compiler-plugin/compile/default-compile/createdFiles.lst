@@ -1,21 +1,42 @@
+ModuloInventario\Grafo.class
 Objetos\Producto.class
+Objetos\Subcategoria.class
 Objetos\Vehiculo.class
-ModuloCompraVenta\ColaVenta.class
 Objetos\Operario.class
+<<<<<<< Updated upstream
 Controller\GestionComprayVenta.class
+=======
+ModuloClientes\NodoOperario.class
+>>>>>>> Stashed changes
 Controller\GestionTrabajos.class
 Controller\GestionProductos.class
 ModuloInventario\NodoLista.class
+ModuloInventario\NodoArbol.class
 Controller\GestionClientes.class
-ModuloCompraVenta\Cola.class
 ModuloCompraVenta\NodoColaV.class
-Controller\GestionOperarios.class
-Objetos\Venta.class
+ModuloClientes\PilaCliente.class
+ModuloClientes\NodoCliente.class
 Conexiones\ConexionBD.class
 Controller\Menu.class
+<<<<<<< Updated upstream
 Objetos\TrabajoRealizado.class
+=======
+ModuloInventario\Arbol.class
+>>>>>>> Stashed changes
 ModuloInventario\ListaCircular.class
 ModuloCompraVenta\NodoCola.class
-Controller\GestionVehiculos.class
 Lubricentro\Lubricentro.class
 Objetos\Cliente.class
+ModuloCompraVenta\ColaVenta.class
+ModuloCompraVenta\NodoColaCompra.class
+Controller\GestionComprayVenta.class
+ModuloClientes\PilaOperario.class
+ModuloCompraVenta\Cola.class
+ModuloInventario\ListaIds.class
+Controller\GestionOperarios.class
+ModuloInventario\NodoGrafo.class
+Objetos\Venta.class
+Objetos\TrabajoRealizado.class
+ModuloCompraVenta\ColaCompra.class
+Controller\GestionVehiculos.class
+ModuloInventario\NodoListaIds.class

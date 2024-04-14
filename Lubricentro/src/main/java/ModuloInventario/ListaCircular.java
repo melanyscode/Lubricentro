@@ -5,6 +5,7 @@
 package ModuloInventario;
 
 import Conexiones.ConexionBD;
+import Controller.GestionProductos;
 import static Controller.GestionProductos.listaProductos;
 import Objetos.Producto;
 import javax.swing.JOptionPane;
@@ -28,6 +29,19 @@ public class ListaCircular {
         return inicio == null;
     }
 
+     public int size() {
+        if (inicio == null) {
+            return 0;
+        } else {
+            int tamaño = 1;
+            NodoLista nodoActual = inicio.getSiguiente();
+            while (nodoActual != inicio) {
+                tamaño++;
+                nodoActual = nodoActual.getSiguiente();
+            }
+            return tamaño;
+        }
+    }
     public void agregar(Producto p) {
         NodoLista nuevo = new NodoLista(p);
 
@@ -203,5 +217,14 @@ public class ListaCircular {
                 JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
             }
         }
+    }
+    public void agregarListaGrafo(){
+         NodoLista aux = inicio;
+            do {
+                int idProducto = aux.getProducto().getId();
+                int categoria = aux.getProducto().getCategoriaId();
+                GestionProductos.grafoRelaciones.agregarRelacion(idProducto, categoria);
+                aux = aux.getSiguiente();
+            } while (aux != inicio);
     }
 }

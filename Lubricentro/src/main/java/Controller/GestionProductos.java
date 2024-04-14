@@ -5,6 +5,7 @@
 package Controller;
 
 import Conexiones.ConexionBD;
+import ModuloInventario.Grafo;
 import ModuloInventario.ListaCircular;
 import Objetos.Producto;
 import javax.swing.JOptionPane;
@@ -17,6 +18,7 @@ import java.sql.*;
 public class GestionProductos {
 
     public static ListaCircular listaProductos = new ListaCircular();
+    public static Grafo grafoRelaciones = new Grafo();
     Producto p = new Producto();
     ConexionBD conexion = new ConexionBD();
 
@@ -28,7 +30,7 @@ public class GestionProductos {
             menuProductos();
         }else{
             try {
-                 idAux = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID del producto"));
+                 idAux = Integer.parseInt(inputID);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
             }
@@ -49,6 +51,7 @@ public class GestionProductos {
                 String descripcion = "";
                 double precio = 0;
                 int stock = 0;
+                int categoria = 0;
                 boolean activo = true;
 
                 while (true) {
@@ -86,6 +89,18 @@ public class GestionProductos {
                             JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
                         }
                     }
+                    //idcategoria 
+                 String categoriaInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias", p.getStock());
+                if (categoriaInput == null) {
+                    menuProductos();
+                    break;
+                } else {
+                    try {
+                        categoria = Integer.parseInt(categoriaInput);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+                    }
+                }
                     String[] options = {"Disponible", "No disponible"};
                     String activoInput = (String) JOptionPane.showInputDialog(null, "¿El producto esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                     if (activoInput.endsWith("Disponible")) {
@@ -96,7 +111,7 @@ public class GestionProductos {
                     break; //hacer un break para salir del while 
                 }
                 //Crear producto
-                Producto p1 = new Producto(nombre, descripcion, precio, stock, activo);
+                Producto p1 = new Producto(nombre, descripcion, precio, stock, categoria, activo);
                 //agregar producto a la lsita
                 listaProductos.agregar(p1);
                 //agregar lista a la bd 
@@ -202,6 +217,8 @@ public class GestionProductos {
                         JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
                     }
                 }
+                
+                
                 String[] options = {"Disponible", "No disponible"};
                 String activoInput = (String) JOptionPane.showInputDialog(null, "¿El producto esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                 if (activoInput.endsWith("Disponible")) {
@@ -301,11 +318,27 @@ public class GestionProductos {
         }
     }
     public void mostrar(){
+        listaProductos.agregarBDaLista();
+        JOptionPane.showMessageDialog(null, listaProductos.toString());
+    }
+    public void mostrarCategoriasProductos(){
+        //agregar parte de grafos aca
         
+        //agregar bd a  lista
+        listaProductos.agregarBDaLista();
+        
+        //agregar lista a el grafo para imprimirlo 
+        int size = listaProductos.size();
+        System.out.println(size);
+        grafoRelaciones = new Grafo(size + 1);
+        listaProductos.agregarListaGrafo();
+        
+        //imprimir con el grafo
+        JOptionPane.showMessageDialog(null, "Inventario Categorias\n" + grafoRelaciones.imprimirMatrizAdyacencia());
     }
 
     public void menuProductos() {
-        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Volver"};
+        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Mostrar Relaciones", "Volver"};
         int opc;
         do {
             opc = Menu.Menu("Inventario Productos", "Elija una opción", opcs, "Agregar");
@@ -323,6 +356,9 @@ public class GestionProductos {
                     buscar();
                     break;
                 case 4:
+                    mostrarCategoriasProductos();
+                    break;
+                case 5: 
                     Lubricentro.Lubricentro.InicioAdmin();
             }
         } while (opc != opcs.length);
