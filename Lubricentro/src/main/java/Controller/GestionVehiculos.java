@@ -14,7 +14,7 @@ public class GestionVehiculos {
     //importar estrucura para agregar productos
     Vehiculo v = new Vehiculo();
     
-     private void agregar(){
+     private void agregar(){ 
          
     }
     private void buscar(){

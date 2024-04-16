@@ -27,7 +27,7 @@ public class Lubricentro {
     public static GestionVehiculos gestionVe = new GestionVehiculos();
 
     public static void main(String[] args) {
-        Inicio();
+        InicioAdmin();
     }
 
     public static void InicioAdmin() {

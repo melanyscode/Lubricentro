@@ -13,18 +13,20 @@ import Objetos.TrabajoRealizado;
 public class GestionTrabajos {
     
     TrabajoRealizado t = new TrabajoRealizado();
+    //listas de trabajos en curso 
+    //lista de trabajos terminados 
     
     private void agregar(){
         //logica para insertar - no hay estructura para guardar los trabajos pero 
     }
-    private void buscar(){
+    private void enCurso(){
         
+        
+    }
+    private void Terminados(){
         
     }
     private void mostrar(){
-        
-    }
-    private void actualizar(){
         
     }
     
@@ -45,10 +47,10 @@ public class GestionTrabajos {
                     eliminar();
                     break;
                 case 2: 
-                    actualizar();
+                    enCurso();
                     break;
                 case 3:
-                    buscar();
+                    Terminados();
                     break;
                 case 4:
                     mostrar();
@@ -71,10 +73,10 @@ public class GestionTrabajos {
                     eliminar();
                     break;
                 case 2: 
-                    actualizar();
+                    enCurso();
                     break;
                 case 3:
-                    buscar();
+                    Terminados();
                     break;
                 case 4:
                     mostrar();

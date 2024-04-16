@@ -27,18 +27,27 @@ public class Producto {
         this.descripcion = descripcion;
         this.precio = precio;
         this.stock = stock;
-        this.categoriaId = 2;
         this.activo = activo;
         
     }
 
+    public Producto(String nombre, String descripcion, double precio, int stock, int categoriaId, boolean activo) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.stock = stock;
+        this.categoriaId = categoriaId;
+        this.activo = activo;
+    }
+
+    
     public Producto(int id, String nombre, String descripcion, double precio, int stock, int categoriaId, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.stock = stock;
-        this.categoriaId = 2;
+        this.categoriaId = categoriaId;
         this.activo = activo;
     }
     
