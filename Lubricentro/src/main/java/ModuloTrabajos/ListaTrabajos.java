@@ -2,26 +2,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ModuloInventario;
+package ModuloTrabajos;
 
 import Conexiones.ConexionBD;
 import Controller.GestionProductos;
-import static Controller.GestionProductos.listaProductos;
+import Controller.GestionTrabajos;
+import static Controller.GestionTrabajos.listaTrabajos;
+import ModuloInventario.ListaCircular;
+import ModuloInventario.NodoLista;
 import Objetos.Producto;
+import Objetos.TrabajoRealizado;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
-import java.sql.*;
-import java.sql.Connection;
 
 /**
  *
  * @author Melanie Gutierrez
  */
-public class ListaCircular {
-
+public class ListaTrabajos {
     ConexionBD conexion = new ConexionBD();
-    NodoLista inicio;
+    Nodo inicio;
 
-    public ListaCircular() {
+    public ListaTrabajos() {
         this.inicio = null;
     }
 
@@ -34,7 +37,7 @@ public class ListaCircular {
             return 0;
         } else {
             int tamaño = 1;
-            NodoLista nodoActual = inicio.getSiguiente();
+            Nodo nodoActual = inicio.getSiguiente();
             while (nodoActual != inicio) {
                 tamaño++;
                 nodoActual = nodoActual.getSiguiente();
@@ -42,15 +45,15 @@ public class ListaCircular {
             return tamaño;
         }
     }
-    public void agregar(Producto p) {
-        NodoLista nuevo = new NodoLista(p);
+    public void agregar(TrabajoRealizado t) {
+        Nodo nuevo = new Nodo(t);
 
         if (isEmpty()) {
             inicio = nuevo;
             nuevo.setSiguiente(nuevo);
             nuevo.setAnterior(nuevo);
         } else {
-            NodoLista ultimo = inicio.getAnterior();
+            Nodo ultimo = inicio.getAnterior();
             ultimo.setSiguiente(nuevo);
             nuevo.setAnterior(ultimo);
             nuevo.setSiguiente(inicio);
@@ -59,15 +62,15 @@ public class ListaCircular {
         }
     }
 
-    public Producto buscarId(int id) {
+    public TrabajoRealizado buscarId(int id) {
         if (isEmpty()) {
             JOptionPane.showMessageDialog(null, "El inventario esta vacio");
             return null;
         }
-        NodoLista aux = inicio;
+        Nodo aux = inicio;
         while (aux != null) {
-            if (aux.getProducto().getId() == id) {
-                return aux.getProducto();
+            if (aux.getTrabajo().getId() == id) {
+                return aux.getTrabajo();
             }
             aux = aux.getSiguiente();
         }
@@ -78,10 +81,10 @@ public class ListaCircular {
         if (isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay productos en el inventario");
         } else {
-            NodoLista actual = inicio;
+            Nodo actual = inicio;
             do {
                 //comprobar si el elemento es el que se estabuscando
-                if (actual.getProducto().getId() == id) {
+                if (actual.getTrabajo().getId() == id) {
                     if (actual == inicio) {
                         inicio = actual.getSiguiente();
                         if (inicio == actual) {
@@ -105,8 +108,8 @@ public class ListaCircular {
 
     public void vaciarLista() {
 
-        NodoLista actual = inicio;
-        NodoLista temp;
+        Nodo actual = inicio;
+        Nodo temp;
         do {
             temp = actual;
             actual = actual.getSiguiente();
@@ -117,14 +120,14 @@ public class ListaCircular {
         inicio = null;
     }
 
-    public void actualizar(int id, Producto p) {
+    public void actualizar(int id, TrabajoRealizado t) {
         if (isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay productos en el inventario");
         }
-        NodoLista aux = inicio;
+        Nodo aux = inicio;
         while (aux != inicio) {
-            if (aux.getProducto().getId() == id) {
-                aux.setProducto(p);
+            if (aux.getTrabajo().getId() == id) {
+                aux.setTrabajo(t);
                 JOptionPane.showMessageDialog(null, "El Prodcuto con ID: " + id + " ha sido modificado");
             } else {
                 JOptionPane.showMessageDialog(null, "El producto con ID: " + id + " no se encuentra en el inventario");
@@ -140,33 +143,32 @@ public class ListaCircular {
         if (isEmpty()) {
             mensaje += "No hay productos en el inventario";
         } else {
-            NodoLista aux = inicio;
+            Nodo aux = inicio;
             do {
-                mensaje += aux.getProducto().toString();
+                mensaje += aux.getTrabajo().toString() + "\n";
                 aux = aux.getSiguiente();
             } while (aux != inicio);
         }
         return mensaje;
     }
 
-    public void agregarListaBD(ListaCircular lista) {
+    public void agregarListaBD(ListaTrabajos lista) {
         if (isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay elementos en la lista");
         }
         PreparedStatement preState = null;
         try {
             conexion.setConexion();
-            conexion.setConsulta("INSERT INTO producto (id_categoria, descripcion, detalle, precio, existencias) VALUES (?,?,?,?,?)");
+            conexion.setConsulta("INSERT INTO servicio (id_servicio, descripcion, precio, activo) VALUES (?,?,?,?)");
             preState = conexion.getConsulta();
 
-            NodoLista aux = inicio;
+            Nodo aux = inicio;
             do {
-                Producto p = aux.getProducto();
-                preState.setInt(1, p.getCategoriaId());
-                preState.setString(2, p.getNombre());
-                preState.setString(3, p.getDescripcion());
-                preState.setDouble(4, p.getPrecio());
-                preState.setInt(5, p.getStock());
+                TrabajoRealizado t = aux.getTrabajo();
+                preState.setInt(1, t.getId());
+                preState.setString(2, t.getDescripcion());
+                preState.setDouble(3, t.getPrecio());
+                preState.setBoolean(4, t.isActivo());
 
                 preState.executeUpdate();
 
@@ -190,19 +192,16 @@ public class ListaCircular {
         PreparedStatement preState = null;
         try {
             conexion.setConexion();
-            conexion.setConsulta("SELECT * FROM producto");
+            conexion.setConsulta("SELECT * FROM servicio");
             preState = conexion.getConsulta();
             ResultSet consulta = preState.executeQuery();
             while (consulta.next()) {
-                int id = consulta.getInt("id_producto");
-                int categoria = consulta.getInt("id_categoria");
+                int id = consulta.getInt("id_servicio");
                 String descripcion = consulta.getString("descripcion");
-                String detalle = consulta.getString("detalle");
                 double precio = consulta.getDouble("precio");
-                int stock = consulta.getInt("existencias");
-                boolean activo = consulta.getBoolean("activo");
-                Producto p = new Producto(id, descripcion, detalle, precio, stock, categoria, activo);
-                listaProductos.agregar(p);
+                boolean disponible = consulta.getBoolean("disponible");
+                TrabajoRealizado t = new TrabajoRealizado(id, descripcion, precio, disponible);
+                listaTrabajos.agregar(t);
             }
 
         } catch (Exception e) {
@@ -218,21 +217,23 @@ public class ListaCircular {
             }
         }
     }
-    public void agregarListaGrafo(){
-         NodoLista aux = inicio;
-            do {
-                int idProducto = aux.getProducto().getId();
-                int categoria = aux.getProducto().getCategoriaId();
-                GestionProductos.grafoRelaciones.agregarRelacion(idProducto, categoria);
-                aux = aux.getSiguiente();
-            } while (aux != inicio);
-    }
+    //metodo de grafo puede que sea necesario (o no ) 
+//    public void agregarListaGrafo(){
+//         Nodo aux = inicio;
+//            do {
+//                int idProducto = aux.getProducto().getId();
+//                int categoria = aux.getProducto().getCategoriaId();
+//                GestionProductos.grafoRelaciones.agregarRelacion(idProducto, categoria);
+//                aux = aux.getSiguiente();
+//            } while (aux != inicio);
+//    }
+    
     //metodo para mover la lista a una estructura de arbol
-    public void agregarListaArbol(ListaCircular lista){
-        NodoLista aux = inicio;
+    public void agregarListaArbol(ListaTrabajos lista){
+        Nodo aux = inicio;
         do {            
-            Producto p = aux.getProducto();
-            GestionProductos.arbolProductos.insertar(p);
+            TrabajoRealizado t = aux.getTrabajo();
+            GestionTrabajos.arbolTrabajos.insertar(t);
             aux = aux.getSiguiente();
         } while (aux != inicio);
     }

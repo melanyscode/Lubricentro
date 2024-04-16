@@ -5,6 +5,7 @@
 package Controller;
 
 import static Lubricentro.Lubricentro.InicioAdmin;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,42 +13,44 @@ import static Lubricentro.Lubricentro.InicioAdmin;
  */
 public class GestionOperarios {
     // agregar la estructura con la que se va a agregar Operarios
-   
-    public void Registrar(){
+
+    public void AsignarTrabajo() {
+        //para asignar un trabajo al operario, se le lee desde la lista de trabajos en gestion de trabajos
+        GestionTrabajos.listaTrabajos.agregarBDaLista();
+        GestionTrabajos.listaTrabajos.agregarListaArbol(GestionTrabajos.listaTrabajos);
+
+        //pedir el id de cliente para vincular el vehiculo con el trabajo a realizar
+        int id = 0;
+        String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente");
+        if (idInput == null) {
+            OperarioMenu();
+        } else {
+            try {
+                id = Integer.parseInt(idInput);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+            }
+        }
         
     }
-    
-    public void Consultar(){
-        
+
+    public void Procesar() {
+        //el operario procesa el trabajo asignado
     }
-    
-    public void Asignar(){
-        //asignar trabajos
-    }
-    
-    public void Eliminar(){
-        
-    }
-    
-    public void OperarioMenu(){
-        String[] opcs = {"Registrar", "Consultar", "Asignar Trabajo", "Elimianr", "Volver"};
+
+    public void OperarioMenu() {
+        String[] opcs = {"Asignar trabajo", "Consultar", "Volver"};
         int opc;
-        do {  
+        do {
             opc = Menu.Menu("Menú Operarios", "Elija una opción", opcs, "Registrar");
-            switch(opc){
+            switch (opc) {
                 case 0:
-                    Registrar();
+                    AsignarTrabajo();
                     break;
-                case 1: 
-                    Consultar();
+                case 1:
+                    Procesar();
                     break;
                 case 2:
-                    Asignar();
-                    break;
-                case 3: 
-                    Eliminar();
-                    break;
-                case 4:
                     InicioAdmin();
                     break;
             }

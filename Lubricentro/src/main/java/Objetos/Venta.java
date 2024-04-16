@@ -18,8 +18,26 @@ public class Venta {
     private int idVenta;
     private double precio;
     private double total;
+    private int idServicio;
+    private int idCliente;
 
     public Venta() {
+    }
+
+    public Venta(int idProducto, int idVenta, double precio, double total, int idCliente) {
+        this.idProducto = idProducto;
+        this.idVenta = idVenta;
+        this.precio = precio;
+        this.total = total;
+        this.idCliente = idCliente;
+    }
+
+    public Venta(int idVenta, double precio, double total, int idServicio, int idCliente) {
+        this.idVenta = idVenta;
+        this.precio = precio;
+        this.total = total;
+        this.idServicio = idServicio;
+        this.idCliente = idCliente;
     }
 
     public int getIdProducto() {
@@ -52,6 +70,22 @@ public class Venta {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+    
+     public int getIdServicio() {
+        return idServicio;
+    }
+
+    public void setIdServicio(int idServicio) {
+        this.idServicio = idServicio;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     @Override

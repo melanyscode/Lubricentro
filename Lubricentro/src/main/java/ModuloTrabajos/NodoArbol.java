@@ -2,29 +2,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ModuloInventario;
+package ModuloTrabajos;
 
-import Objetos.Producto;
+import Objetos.TrabajoRealizado;
 
 /**
  *
  * @author Melanie Gutierrez
  */
 public class NodoArbol {
-    private Producto producto;
+    private TrabajoRealizado trabajo;
     private NodoArbol left;
     private NodoArbol right;
 
-    public NodoArbol(Producto producto) {
-        this.producto = producto;
+    public NodoArbol(TrabajoRealizado trabajo) {
+        this.trabajo = trabajo;
+    }
+    
+
+    public TrabajoRealizado getTrabajo() {
+        return trabajo;
     }
 
-    public Producto getProducto() {
-        return producto;
-    }
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
+    public void setTrabajo(TrabajoRealizado trabajo) {
+        this.trabajo = trabajo;
     }
 
     public NodoArbol getLeft() {
@@ -43,6 +44,5 @@ public class NodoArbol {
         this.right = right;
     }
 
-  
-    
+   
 }

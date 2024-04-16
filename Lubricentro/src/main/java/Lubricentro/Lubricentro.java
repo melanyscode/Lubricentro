@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  * @author josea
  */
 public class Lubricentro {
-
+    public static boolean isAdmin = false;
     public static ConexionBD conexion = new ConexionBD();
     public static Menu menu = new Menu();
     public static GestionProductos gestionP = new GestionProductos();
@@ -162,6 +162,10 @@ public class Lubricentro {
                 if (password == null) {
                     Inicio();
                 }
+                String nombre = JOptionPane.showInputDialog(null, "Ingrese el del operario");
+                if(nombre == null){
+                    Inicio();
+                }
                 if (user != null && password != null) {
                     conexion.setConexion();
                     conexion.setConsulta("INSERT INTO usuario (username, password) VALUES (?,?)");
@@ -182,9 +186,14 @@ public class Lubricentro {
                         preState.setString(1, "ROLE_USER");
                         preState.setInt(2, id);
                         preState.executeUpdate();
+                        conexion.setConsulta("INSERT INTO operario (nombre) VALUES (?)");
+                        preState = conexion.getConsulta();
+                        preState.setString(1, nombre);
+                        preState.executeUpdate();
                         conexion.cerrarConexion();
                         JOptionPane.showMessageDialog(null, "Usuario registrado de manera satisfactoria");
                     }
+                   
                 }
             }
             
@@ -235,12 +244,16 @@ public class Lubricentro {
                         String admin = "ROLE_ADMIN";
                         String usuario = "ROLE_USER";
                         if (consultaRol.getString("nombre").equals(admin)) {
+                            isAdmin = true;
                             InicioAdmin();
                         } else if (consultaRol.getString("nombre").equals(usuario)) {
                             InicioUsuario();
                         }
                     }
 
+                }else{
+                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrecta, intente de nuevo");
+                    Login();
                 }
             }
         } catch (Exception e) {

@@ -12,8 +12,9 @@ public class Cliente {
     private String nombre;
     private String cedula;
     private int idLCiente;
+    private Vehiculo vehiculo;
 
-    public Cliente(String nombre, String cedula, int idLCiente) {
+    public Cliente(String nombre, String cedula, int idLCiente, Vehiculo vehiculo) {
         this.nombre = nombre;
         this.cedula = cedula;
         this.idLCiente = idLCiente;
