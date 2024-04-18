@@ -9,9 +9,9 @@ import java.sql.SQLException;
 public class ConexionBD {
 
     Connection conexion = null;
-    //espacio para abrir conexion
     PreparedStatement consulta = null;
     ResultSet resultado = null;
+
     String url = "jdbc:mysql://localhost:3306/lubricentro_jomean";
     String username = "root";
     String password = "Ameli@040699";
@@ -49,27 +49,18 @@ public class ConexionBD {
     }
 
     public void cerrarConexion() {
-        if (resultado != null) {
-            try {
+        try {
+            if (resultado != null) {
                 resultado.close();
-            } catch (SQLException error) {
-                error.printStackTrace();
             }
-        }
-        if (consulta != null) {
-            try {
+            if (consulta != null) {
                 consulta.close();
-            } catch (SQLException error) {
-                error.printStackTrace();
             }
-        }
-        if (conexion != null) {
-            try {
+            if (conexion != null) {
                 conexion.close();
-            } catch (SQLException error) {
-                error.printStackTrace();
             }
+        } catch (SQLException error) {
+            error.printStackTrace();
         }
     }
-
 }

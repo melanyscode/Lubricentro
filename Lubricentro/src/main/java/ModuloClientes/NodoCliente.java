@@ -8,26 +8,24 @@ import Objetos.Cliente;
 
 /**
  *
- * @author Melanie Gutierrez
+ * @author josea
  */
 public class NodoCliente {
-    private Cliente cliente;
-    private NodoCliente siguiente;  
 
-    public NodoCliente() {
-        this.siguiente = null;
-    }
+    private Cliente elemento;
+    private NodoCliente siguiente;
 
     public NodoCliente(Cliente cliente) {
-        this.cliente = cliente;
+    this.elemento = cliente;
+    this.siguiente = null;
+}
+
+    public Cliente getElemento() {
+    return elemento;
     }
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setElemento(Cliente elemento) {
+        this.elemento = elemento;
     }
 
     public NodoCliente getSiguiente() {
@@ -37,9 +35,5 @@ public class NodoCliente {
     public void setSiguiente(NodoCliente siguiente) {
         this.siguiente = siguiente;
     }
-    
-    
-    
-    
-    
+
 }

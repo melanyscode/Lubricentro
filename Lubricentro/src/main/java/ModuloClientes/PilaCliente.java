@@ -8,44 +8,53 @@ import Objetos.Cliente;
 
 /**
  *
- * @author Melanie Gutierrez
+ * @author josea
  */
 public class PilaCliente {
-    private NodoCliente top;
-    
-    public NodoCliente getTop(){
-        return top;
+
+    private NodoCliente cima;
+
+    public PilaCliente() {
+        this.cima = null;
     }
-    public boolean isEmpty(){
-        return top == null;
+
+    public boolean esVacia() {
+        return cima == null;
     }
-    public void push(Cliente cliente){
+
+    public void apilar(Cliente cliente) {
         NodoCliente nuevo = new NodoCliente(cliente);
-        if(top == null){
-            top = nuevo;
-        }else{
-            nuevo.setSiguiente(top);
-            top = nuevo;
+        if (esVacia()) {
+            cima = nuevo;
+        } else {
+            nuevo.setSiguiente(cima);
+            cima = nuevo;
         }
     }
-    
-    public void desapilar(){
-        if(!isEmpty()){
-            top = top.getSiguiente();
+
+    public void desapilar() {
+        if (!esVacia()) {
+            cima = cima.getSiguiente();
+        } else {
+            System.out.println("No se puede extraer ningún elemento porque la pila está vacía");
         }
     }
-    
-    public String toString(){
-        String respuesta = "";
-        if(!isEmpty()){
-            NodoCliente  aux = top;
-            while(aux != null){
-                respuesta += aux.getCliente().toString();
-                aux = aux.getSiguiente();
+
+    public String imprimirPila() {
+        StringBuilder respuesta = new StringBuilder();
+
+        if (!esVacia()) {
+            NodoCliente auxiliar = cima;
+            while (auxiliar != null) {
+                respuesta.append(auxiliar.getElemento().toString()).append("\n");
+                auxiliar = auxiliar.getSiguiente();
             }
-        }else{
-            respuesta += "No hay Clientes registrados";
         }
-        return respuesta;
+
+        return respuesta.toString();
+    }
+
+    public NodoCliente getCima() {
+        return cima;
     }
 }

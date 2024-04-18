@@ -11,23 +11,23 @@ package Objetos;
 public class Cliente {
     private String nombre;
     private String cedula;
-    private int idLCiente;
+    private int idCliente;
 
-    public Cliente(String nombre, String cedula, int idLCiente) {
+    public Cliente(String nombre, String cedula, int idCliente) {
         this.nombre = nombre;
         this.cedula = cedula;
-        this.idLCiente = idLCiente;
+        this.idCliente = idCliente;
     }
 
     public Cliente() {
     }
 
-    public int getIdLCiente() {
-        return idLCiente;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setIdLCiente(int idLCiente) {
-        this.idLCiente = idLCiente;
+    public void setIdCliente(int idLCiente) {
+        this.idCliente = idLCiente;
     }
 
     public String getNombre() {
@@ -48,7 +48,7 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente " + "Nombre: " + nombre + ", Cedula: " + cedula + ", ID" + idLCiente;
+        return "Cliente " + "Nombre: " + nombre + ", Cedula: " + cedula + ", ID" + idCliente;
     }
     
     
