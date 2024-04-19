@@ -142,7 +142,7 @@ public class GestionTrabajos {
         }
     }
 
-    private void mostrar() {
+    public void mostrar() {
         //mostrart los servicios disponibles 
         listaTrabajos.agregarBDaLista();
         JOptionPane.showMessageDialog(null, listaTrabajos.toString());

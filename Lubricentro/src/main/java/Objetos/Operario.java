@@ -11,6 +11,7 @@ package Objetos;
 public class Operario {
     private String nombre; 
     private int idOperario;
+    private boolean disponible;
 
     public Operario() {
     }
@@ -19,6 +20,13 @@ public class Operario {
         this.nombre = nombre;
         this.idOperario = idOperario;
     }
+
+    public Operario(String nombre, int idOperario, boolean disponible) {
+        this.nombre = nombre;
+        this.idOperario = idOperario;
+        this.disponible = disponible;
+    }
+    
 
     public int getIdOperario() {
         return idOperario;
@@ -39,6 +47,14 @@ public class Operario {
     @Override
     public String toString() {
         return "Operario: " + "Nombre: " + nombre + ", ID: " + idOperario;
+    }
+
+    public boolean isDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
     }
 
     
