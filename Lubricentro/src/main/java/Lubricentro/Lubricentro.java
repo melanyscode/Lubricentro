@@ -1,12 +1,11 @@
 package Lubricentro;
 
 import Conexiones.ConexionBD;
-import Controller.GestionClientes;
+import Controller.GestionClientesyVehiculos;
 import Controller.GestionComprayVenta;
 import Controller.GestionOperarios;
 import Controller.GestionProductos;
 import Controller.GestionTrabajos;
-import Controller.GestionVehiculos;
 import Controller.Menu;
 import java.sql.*;
 import javax.swing.JOptionPane;
@@ -22,9 +21,9 @@ public class Lubricentro {
     public static GestionProductos gestionP = new GestionProductos();
     public static GestionComprayVenta gestionCYV = new GestionComprayVenta();
     public static GestionOperarios gestionOp = new GestionOperarios();
-    public static GestionClientes gestionCl = new GestionClientes();
+    public static GestionClientesyVehiculos gestionCl = new GestionClientesyVehiculos();
     public static GestionTrabajos gestionTr = new GestionTrabajos();
-    public static GestionVehiculos gestionVe = new GestionVehiculos();
+   
 
     public static void main(String[] args) {
         InicioAdmin();
@@ -37,7 +36,7 @@ public class Lubricentro {
             opc = Menu.Menu("Menu Principal", "Lubricentro", opcs, "Inventario");
             switch (opc) {
                 case 0:
-                    Inventario();
+                    gestionP.menuProductos();
                     break;
                 case 1:
                     gestionCYV.Ventas();
@@ -57,24 +56,7 @@ public class Lubricentro {
         } while (opc != opcs.length);
     }
 
-    public static void Inventario() {
-        String[] opcs = {"Productos", "Vehiculos", "Volver"};
-        int opc;
-        do {
-            opc = Menu.Menu("Inventario", "Elija una opcion", opcs, "Productos");
-            switch (opc) {
-                case 0:
-                    gestionP.menuProductos();
-                    break;
-                case 1:
-                    gestionVe.menuVehiculos();
-                    break;
-                case 2:
-                    InicioAdmin();
-                    break;
-            }
-        } while (opc != opcs.length);
-    }
+   
 
     //lo que tiene accesos los operarios
     public static void InicioUsuario() {
@@ -84,7 +66,7 @@ public class Lubricentro {
             opc = Menu.Menu("Menu Principal", "Lubricentro", opcs, "Inventario");
             switch (opc) {
                 case 0:
-                    InventarioUsuario();
+                     gestionP.menuProductosU();
                     break;
                 case 1:
                     gestionCYV.VentasU();
@@ -98,24 +80,6 @@ public class Lubricentro {
         } while (opc != opcs.length);
     }
 
-    public static void InventarioUsuario() {
-        String[] opcs = {"Productos", "Vehiculos", "Volver"};
-        int opc;
-        do {
-            opc = Menu.Menu("Inventario", "Elija una opcion", opcs, "Productos");
-            switch (opc) {
-                case 0:
-                    gestionP.menuProductosU();
-                    break;
-                case 1:
-                    gestionVe.menuVehiculosU();
-                    break;
-                case 2:
-                    InicioUsuario();
-                    break;
-            }
-        } while (opc != opcs.length);
-    }
 
     //menu de inicio 
     public static void Inicio() {
