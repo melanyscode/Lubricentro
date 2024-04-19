@@ -19,16 +19,16 @@ import Objetos.Vehiculo;
  *
  * @author Melanie Gutierrez y Jose :3
  */
-public class GestionClientes {
+public class GestionClientesyVehiculos {
     
     //getsion de clientes y vehiculos (vehiculo esta relacionado con el cliente)
 
-    private PilaCliente pilaClientes;
+    public static PilaCliente pilaClientes;
     Cliente c = new Cliente();
     ConexionBD conexion = new ConexionBD();
     private ConexionBD conexionBD;
 
-    public GestionClientes() {
+    public GestionClientesyVehiculos() {
         conexionBD = new ConexionBD();
         pilaClientes = new PilaCliente();
     }

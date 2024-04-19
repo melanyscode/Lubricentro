@@ -34,5 +34,4 @@ ModuloInventario\NodoGrafo.class
 Objetos\Venta.class
 Objetos\TrabajoRealizado.class
 ModuloCompraVenta\ColaCompra.class
-Controller\GestionVehiculos.class
 ModuloInventario\NodoListaIds.class
