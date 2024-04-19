@@ -20,12 +20,11 @@ import Objetos.Vehiculo;
  * @author Melanie Gutierrez y Jose :3
  */
 public class GestionClientesyVehiculos {
-    
-    //getsion de clientes y vehiculos (vehiculo esta relacionado con el cliente)
 
+    //getsion de clientes y vehiculos (vehiculo esta relacionado con el cliente)
     public static PilaCliente pilaClientes;
     Cliente c = new Cliente();
-    ConexionBD conexion = new ConexionBD();
+    public static ConexionBD conexion = new ConexionBD();
     private ConexionBD conexionBD;
 
     public GestionClientesyVehiculos() {
@@ -55,23 +54,20 @@ public class GestionClientesyVehiculos {
             return; // Salir del método sin hacer más operaciones
         }
 
-       
-
-            // Verificar si el ID del cliente ya existe en la base de datos
+        // Verificar si el ID del cliente ya existe en la base de datos
 //            boolean existeCliente = consultarExistenciaCliente(idCliente, conexionBD);
 //            if (existeCliente) {
 //                JOptionPane.showMessageDialog(null, "Error: El ID del cliente ya existe en la base de datos.", "Registro de Cliente", JOptionPane.ERROR_MESSAGE);
 //                return; // Salir del método sin hacer más operaciones
 //            }
+        // Si el ID no existe en la base de datos, procedemos a registrar el cliente
+        Vehiculo vehiculo = new Vehiculo(modeloVehiculo);
+        Cliente cliente = new Cliente(nombre, cedula);
+        System.out.println(cliente.toString());
+        pilaClientes.apilar(cliente); // Agregar cliente a la pila
+        agregarClienteBD(cliente, vehiculo); // Agregar cliente a la base de datos
+        JOptionPane.showMessageDialog(null, "Cliente registrado en la pila y en la base de datos: " + cliente, "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
 
-            // Si el ID no existe en la base de datos, procedemos a registrar el cliente
-            Vehiculo vehiculo = new Vehiculo(modeloVehiculo);
-            Cliente cliente = new Cliente(nombre, cedula);
-            System.out.println(cliente.toString());
-            pilaClientes.apilar(cliente); // Agregar cliente a la pila
-            agregarClienteBD(cliente, vehiculo); // Agregar cliente a la base de datos
-            JOptionPane.showMessageDialog(null, "Cliente registrado en la pila y en la base de datos: " + cliente, "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
-        
     }
 
     public void ConsultarPilaClientes() {
@@ -161,19 +157,19 @@ public class GestionClientesyVehiculos {
 //            
             conexion.setConsulta("INSERT INTO vehiculo (modelo) VALUES (?)");
             statement = conexion.getConsulta();
-            statement.setString(1, vehiculo.getModelo());    
+            statement.setString(1, vehiculo.getModelo());
             statement.executeUpdate();
-            
+
             //obtener el id del vehiculo
             conexion.setConsulta("SELECT * FROM vehiculo where modelo = ?");
             statement = conexion.getConsulta();
             statement.setString(1, vehiculo.getModelo());
-            
+
             ResultSet rs = statement.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 vehiculo.setIdVehiculo(rs.getInt("id_vehiculo"));
             }
-            
+
             // Preparar la consulta SQL para insertar el cliente en la tabla
             String consulta = "INSERT INTO cliente (nombre, cedula, id_vehiculo) VALUES (?, ?, ?)";
             conexion.setConsulta(consulta);
@@ -181,7 +177,6 @@ public class GestionClientesyVehiculos {
             statement.setString(1, cliente.getNombre());
             statement.setString(2, cliente.getCedula());
             statement.setInt(3, vehiculo.getIdVehiculo());
-            
 
             // Ejecutar la consulta para insertar el cliente en la tabla
             int filasAfectadas = statement.executeUpdate();
@@ -225,6 +220,36 @@ public class GestionClientesyVehiculos {
             error.printStackTrace();
         } finally {
             conexion.cerrarConexion();
+        }
+    }
+
+    public static void agregarBDCola(PilaCliente pila) {
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM cliente");
+            preState = conexion.getConsulta();
+
+            ResultSet rs = preState.executeQuery();
+            while (rs.next()) {
+                int idCliente = rs.getInt("id_cliente");
+                String nombre = rs.getString("nombre");
+                String cedula = rs.getString("cedula");
+                int idVehiculo = rs.getInt("id_vehiculo");
+                Cliente cliente = new Cliente(nombre, cedula, idCliente, idVehiculo);
+                pila.apilar(cliente);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
         }
     }
 

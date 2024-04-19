@@ -57,4 +57,16 @@ public class PilaCliente {
     public NodoCliente getCima() {
         return cima;
     }
+
+    public Cliente buscar(int id) {
+        NodoCliente aux = cima;
+        while (aux != null) {
+            if (aux.getElemento().getIdCliente() == id) {
+                return aux.getElemento();
+            }
+
+            aux.setSiguiente(aux.getSiguiente());
+        }
+        return null;
+    }
 }

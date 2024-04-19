@@ -12,7 +12,7 @@ public class Cliente {
     private String nombre;
     private String cedula;
     private int idCliente;
-    private int idVehiculo;
+    private Integer idVehiculo;
 
     public Cliente(String nombre, String cedula, int idCliente, int idVehiculo) {
         this.nombre = nombre;
@@ -21,7 +21,7 @@ public class Cliente {
         this.idVehiculo = idVehiculo;
     }
 
-    public Cliente(String nombre, String cedula, int idVehiculo) {
+    public Cliente(String nombre, String cedula, Integer idVehiculo) {
         this.nombre = nombre;
         this.cedula = cedula;
         this.idVehiculo = idVehiculo;
@@ -61,11 +61,11 @@ public class Cliente {
     }
     
 
-    public int getIdVehiculo() {
+    public Integer getIdVehiculo() {
         return idVehiculo;
     }
 
-    public void setIdVehiculo(int idVehiculo) {
+    public void setIdVehiculo(Integer idVehiculo) {
         this.idVehiculo = idVehiculo;
     }
 
