@@ -20,6 +20,19 @@ public class Vehiculo {
         this.idVehiculo = idVehiculo;
     }
 
+    public Vehiculo(int idVehiculo, String modelo) {
+        this.idVehiculo = idVehiculo;
+        this.modelo = modelo;
+    }
+
+    public Vehiculo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public Vehiculo() {
+    }
+    
+
     public String getModelo() {
         return modelo;
     }

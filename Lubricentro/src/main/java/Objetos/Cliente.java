@@ -12,12 +12,26 @@ public class Cliente {
     private String nombre;
     private String cedula;
     private int idCliente;
+    private int idVehiculo;
 
-    public Cliente(String nombre, String cedula, int idCliente) {
+    public Cliente(String nombre, String cedula, int idCliente, int idVehiculo) {
         this.nombre = nombre;
         this.cedula = cedula;
         this.idCliente = idCliente;
+        this.idVehiculo = idVehiculo;
     }
+
+    public Cliente(String nombre, String cedula, int idVehiculo) {
+        this.nombre = nombre;
+        this.cedula = cedula;
+        this.idVehiculo = idVehiculo;
+    }
+
+    public Cliente(String nombre, String cedula) {
+        this.nombre = nombre;
+        this.cedula = cedula;
+    }
+    
 
     public Cliente() {
     }
@@ -45,11 +59,21 @@ public class Cliente {
     public void setCedula(String cedula) {
         this.cedula = cedula;
     }
+    
+
+    public int getIdVehiculo() {
+        return idVehiculo;
+    }
+
+    public void setIdVehiculo(int idVehiculo) {
+        this.idVehiculo = idVehiculo;
+    }
 
     @Override
     public String toString() {
-        return "Cliente " + "Nombre: " + nombre + ", Cedula: " + cedula + ", ID" + idCliente;
+        return "Cliente: " + "Nombre: " + nombre + ", Cedula: " + cedula + ", ID Cliente: " + idCliente + ", ID Vehiculo: " + idVehiculo;
     }
+    
     
     
 }
