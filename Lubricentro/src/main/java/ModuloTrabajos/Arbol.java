@@ -2,38 +2,37 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ModuloInventario;
+package ModuloTrabajos;
 
-import Objetos.Producto;
+import Objetos.TrabajoRealizado;
 
 /**
  *
  * @author Melanie Gutierrez
  */
 public class Arbol {
+     private NodoArbol raiz;
 
-    private NodoArbol raiz;
-
-    public void insertar(Producto p) {
+    public void insertar(TrabajoRealizado t) {
         if (raiz == null) {
-            raiz = new NodoArbol(p);
+            raiz = new NodoArbol(t);
         } else {
-            insertarRecursivo(raiz, p);
+            insertarRecursivo(raiz, t);
         }
     }
 
-    private void insertarRecursivo(NodoArbol n, Producto p) {
-        if (p.getId() <= n.getProducto().getId()) {
+    private void insertarRecursivo(NodoArbol n, TrabajoRealizado t) {
+        if (t.getId() <= n.getTrabajo().getId()) {
             if (n.getLeft() == null) {
-                n.setLeft(new NodoArbol(p));
+                n.setLeft(new NodoArbol(t));
             } else {
-                insertarRecursivo(n.getLeft(), p);
+                insertarRecursivo(n.getLeft(), t);
             }
         } else {
             if (n.getRight() == null) {
-                n.setRight(new NodoArbol(p));
+                n.setRight(new NodoArbol(t));
             } else {
-                insertarRecursivo(n.getRight(), p);
+                insertarRecursivo(n.getRight(), t);
             }
         }
     }
@@ -49,7 +48,7 @@ public class Arbol {
     private String preordenRecursivo(NodoArbol n) {
         String resultado = "";
         if (n != null) {
-            resultado += n.getProducto().toString();
+            resultado += n.getTrabajo().toString();
             resultado += preordenRecursivo(n.getLeft());
             resultado += preordenRecursivo(n.getRight());
         }
@@ -69,27 +68,26 @@ public class Arbol {
         if (n != null) {
             resultado += postOrdenRecursivo(n.getLeft());
             resultado += postOrdenRecursivo(n.getRight());
-            resultado += n.getProducto().toString();
+            resultado += n.getTrabajo().toString();
         }
         return resultado;
     }
 
     //metodo para buscar por ID - mejor manejo de datos, se llega al dato deseado de manera mas rapida que leer toda una lista 
-    public Producto buscarProducto(int id) {
+    public TrabajoRealizado buscarProducto(int id) {
         return buscarProductoRecursivo(raiz, id);
     }
     
-    private Producto buscarProductoRecursivo(NodoArbol n, int id) {
+    private TrabajoRealizado buscarProductoRecursivo(NodoArbol n, int id) {
         if (n == null){
             return null;
         }
-        if(n.getProducto().getId() == id){
-            return n.getProducto();
-        }else if(id < n.getProducto().getId()){
+        if(n.getTrabajo().getId() == id){
+            return n.getTrabajo();
+        }else if(id < n.getTrabajo().getId()){
             return buscarProductoRecursivo(n.getLeft(), id);
         }else{
             return buscarProductoRecursivo(n.getRight(), id);
         }
     }
-    
 }

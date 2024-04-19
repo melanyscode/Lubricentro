@@ -13,12 +13,15 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import Objetos.Cliente;
 import ModuloClientes.PilaCliente;
+import Objetos.Vehiculo;
 
 /**
  *
  * @author Melanie Gutierrez y Jose :3
  */
 public class GestionClientes {
+    
+    //getsion de clientes y vehiculos (vehiculo esta relacionado con el cliente)
 
     private PilaCliente pilaClientes;
     Cliente c = new Cliente();
@@ -34,7 +37,7 @@ public class GestionClientes {
         ///Imprime los clientes ya registrados desde la base de datos//////
         imprimirClientesRegistrados();
         // Solicitar los datos del cliente al usuario
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del cliente:");
+        String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del cliente:");
         if (nombre == null) { // El usuario presionó cancelar
             JOptionPane.showMessageDialog(null, "Operación cancelada.", "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
             return; // Salir del método sin hacer más operaciones
@@ -46,30 +49,29 @@ public class GestionClientes {
             return; // Salir del método sin hacer más operaciones
         }
 
-        String idClienteInput = JOptionPane.showInputDialog("Ingrese el ID del cliente:");
-        if (idClienteInput == null) { // El usuario presionó cancelar
+        String modeloVehiculo = JOptionPane.showInputDialog("Ingrese el Modelo del vehículo del cliente:");
+        if (modeloVehiculo == null) { // El usuario presionó cancelar
             JOptionPane.showMessageDialog(null, "Operación cancelada.", "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
             return; // Salir del método sin hacer más operaciones
         }
 
-        try {
-            int idCliente = Integer.parseInt(idClienteInput);
+       
 
             // Verificar si el ID del cliente ya existe en la base de datos
-            boolean existeCliente = consultarExistenciaCliente(idCliente, conexionBD);
-            if (existeCliente) {
-                JOptionPane.showMessageDialog(null, "Error: El ID del cliente ya existe en la base de datos.", "Registro de Cliente", JOptionPane.ERROR_MESSAGE);
-                return; // Salir del método sin hacer más operaciones
-            }
+//            boolean existeCliente = consultarExistenciaCliente(idCliente, conexionBD);
+//            if (existeCliente) {
+//                JOptionPane.showMessageDialog(null, "Error: El ID del cliente ya existe en la base de datos.", "Registro de Cliente", JOptionPane.ERROR_MESSAGE);
+//                return; // Salir del método sin hacer más operaciones
+//            }
 
             // Si el ID no existe en la base de datos, procedemos a registrar el cliente
-            Cliente cliente = new Cliente(nombre, cedula, idCliente);
+            Vehiculo vehiculo = new Vehiculo(modeloVehiculo);
+            Cliente cliente = new Cliente(nombre, cedula);
+            System.out.println(cliente.toString());
             pilaClientes.apilar(cliente); // Agregar cliente a la pila
-            agregarClienteBD(cliente); // Agregar cliente a la base de datos
+            agregarClienteBD(cliente, vehiculo); // Agregar cliente a la base de datos
             JOptionPane.showMessageDialog(null, "Cliente registrado en la pila y en la base de datos: " + cliente, "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error: ID del cliente debe ser un número entero.", "Registro de Cliente", JOptionPane.ERROR_MESSAGE);
-        }
+        
     }
 
     public void ConsultarPilaClientes() {
@@ -145,24 +147,41 @@ public class GestionClientes {
         return existeCliente;
     }
 
-    public void agregarClienteBD(Cliente cliente) {
+    public void agregarClienteBD(Cliente cliente, Vehiculo vehiculo) {
         ConexionBD conexion = new ConexionBD(); // Crear una nueva instancia de ConexionBD
+        PreparedStatement statement = null;
         try {
             conexion.setConexion(); // Establecer la conexión a la base de datos
 
             // Verificar si el ID del cliente ya existe en la base de datos
-            boolean existeCliente = consultarExistenciaCliente(cliente.getIdCliente(), conexion);
-            if (existeCliente) {
-                JOptionPane.showMessageDialog(null, "Error: El ID del cliente ya existe en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
-                return; // Salir del método sin hacer más operaciones
+//            boolean existeCliente = consultarExistenciaCliente(cliente.getIdCliente(), conexion);
+//            if (existeCliente) {
+//                JOptionPane.showMessageDialog(null, "Error: El ID del cliente ya existe en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+//                return; // Salir del método sin hacer más operaciones
+//            
+            conexion.setConsulta("INSERT INTO vehiculo (modelo) VALUES (?)");
+            statement = conexion.getConsulta();
+            statement.setString(1, vehiculo.getModelo());    
+            statement.executeUpdate();
+            
+            //obtener el id del vehiculo
+            conexion.setConsulta("SELECT * FROM vehiculo where modelo = ?");
+            statement = conexion.getConsulta();
+            statement.setString(1, vehiculo.getModelo());
+            
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                vehiculo.setIdVehiculo(rs.getInt("id_vehiculo"));
             }
-
+            
             // Preparar la consulta SQL para insertar el cliente en la tabla
-            String consulta = "INSERT INTO cliente (nombre, cedula, id_cliente) VALUES (?, ?, ?)";
-            PreparedStatement statement = conexion.getConsulta();
+            String consulta = "INSERT INTO cliente (nombre, cedula, id_vehiculo) VALUES (?, ?, ?)";
+            conexion.setConsulta(consulta);
+            statement = conexion.getConsulta();
             statement.setString(1, cliente.getNombre());
             statement.setString(2, cliente.getCedula());
-            statement.setInt(3, cliente.getIdCliente());
+            statement.setInt(3, vehiculo.getIdVehiculo());
+            
 
             // Ejecutar la consulta para insertar el cliente en la tabla
             int filasAfectadas = statement.executeUpdate();

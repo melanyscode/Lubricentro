@@ -5,6 +5,7 @@ Objetos\Vehiculo.class
 Objetos\Operario.class
 ModuloClientes\NodoOperario.class
 Controller\GestionTrabajos.class
+ModuloTrabajos\Nodo.class
 Controller\GestionProductos.class
 ModuloInventario\NodoLista.class
 ModuloInventario\NodoArbol.class
@@ -18,10 +19,13 @@ ModuloInventario\Arbol.class
 ModuloInventario\ListaCircular.class
 ModuloCompraVenta\NodoCola.class
 Lubricentro\Lubricentro.class
+ModuloTrabajos\NodoArbol.class
+ModuloTrabajos\ListaTrabajos.class
 Objetos\Cliente.class
 ModuloCompraVenta\ColaVenta.class
 ModuloCompraVenta\NodoColaCompra.class
 Controller\GestionComprayVenta.class
+ModuloTrabajos\Arbol.class
 ModuloClientes\PilaOperario.class
 ModuloCompraVenta\Cola.class
 ModuloInventario\ListaIds.class

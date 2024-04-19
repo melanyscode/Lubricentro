@@ -5,6 +5,7 @@
 package Controller;
 
 import Conexiones.ConexionBD;
+import ModuloInventario.Arbol;
 import ModuloInventario.Grafo;
 import ModuloInventario.ListaCircular;
 import Objetos.Producto;
@@ -19,6 +20,7 @@ public class GestionProductos {
 
     public static ListaCircular listaProductos = new ListaCircular();
     public static Grafo grafoRelaciones = new Grafo();
+    public static Arbol arbolProductos = new Arbol();
     Producto p = new Producto();
     ConexionBD conexion = new ConexionBD();
 
@@ -27,7 +29,11 @@ public class GestionProductos {
         int idAux = -1;
         String inputID = JOptionPane.showInputDialog(null, "Ingrese el ID del producto");
         if(inputID == null){
-            menuProductos();
+            if(Lubricentro.Lubricentro.isAdmin){
+                menuProductos();
+            }else{
+                menuProductosU();
+            }
         }else{
             try {
                  idAux = Integer.parseInt(inputID);
@@ -58,7 +64,7 @@ public class GestionProductos {
                     nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
                     //control de botones de joptionpane, si es null (cuando se da en el boton de "cancelar" se vuelve al menu de productos 
                     if (nombre == null) {
-                        menuProductos();
+                        
                         break;
                     }
                     descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
@@ -131,7 +137,11 @@ public class GestionProductos {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea buscar");
         if (idInput == null) {
-            menuProductos();
+            if(Lubricentro.Lubricentro.isAdmin){
+                menuProductos();
+            }else{
+                menuProductosU();
+            }
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -143,7 +153,8 @@ public class GestionProductos {
         try {
             conexion.setConexion(); //setear conexion con bd
             listaProductos.agregarBDaLista(); // metodo de lista circular lee toda la info de la base de datos y la agrega a la lista 
-            Producto p = listaProductos.buscarId(id); // como toda la info de la BD ahora esta en la lista se puede usar el metodo de buscar por id en la lista
+            listaProductos.agregarListaArbol(listaProductos); //agregar lista a una estructura de arbol para poder buscar mas rapido el id que se esta buscando en vez de recorrer todos los nodos de la lista
+            Producto p = arbolProductos.buscarProducto(id); // como toda la info de la BD ahora esta en la lista se puede usar el metodo de buscar por id en la lista
             JOptionPane.showMessageDialog(null, p.toString());
             listaProductos.vaciarLista();
 
@@ -156,7 +167,7 @@ public class GestionProductos {
 
     private void actualizar() {
         int id = 0;
-        String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea eliminar");
+        String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea actualizar");
         if (idInput == null) {
             menuProductos();
         } else {
@@ -173,7 +184,9 @@ public class GestionProductos {
             conexion.setConexion(); //setear conexion con bd
 
             listaProductos.agregarBDaLista(); // metodo de lista circular lee toda la info de la base de datos y la agrega a la lista 
-            Producto p = listaProductos.buscarId(id);
+            //agregar lista al arbol para buscar el producto sin recorrer toda la lista 
+            listaProductos.agregarListaArbol(listaProductos);
+            Producto p = arbolProductos.buscarProducto(id);
 
             //si no se encontro se le pide toda la informacion del producto al usuario 
             String nombre = "";
@@ -245,7 +258,9 @@ public class GestionProductos {
             preState.executeUpdate();
             listaProductos.vaciarLista();
             listaProductos.agregarBDaLista();
-            Producto pActualizado = listaProductos.buscarId(id);
+            //agregar lista al arbol para mejor eficiencia a la hora buscar por id
+            listaProductos.agregarListaArbol(listaProductos);
+            Producto pActualizado = arbolProductos.buscarProducto(id);
             JOptionPane.showMessageDialog(null, "Productos actulizado: " + pActualizado.toString());
             conexion.cerrarConexion();
 
@@ -289,7 +304,9 @@ public class GestionProductos {
             conexion.setConexion(); //setear conexion con bd
             PreparedStatement preState = null;
             listaProductos.agregarBDaLista(); // metodo de lista circular lee toda la info de la base de datos y la agrega a la lista 
-            Producto p = listaProductos.buscarId(id);
+            //agregar lista a un arbol para recorrer de manera mas sencilla los productos
+            listaProductos.agregarListaArbol(listaProductos);
+            Producto p = arbolProductos.buscarProducto(id);
             int input = JOptionPane.showConfirmDialog(null, "¿Desea eliminar " + p.toString() + "?", null, JOptionPane.YES_NO_OPTION);
             if (input == 0) {
                 listaProductos.eliminar(id);
@@ -338,7 +355,7 @@ public class GestionProductos {
     }
 
     public void menuProductos() {
-        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Mostrar Relaciones", "Volver"};
+        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Categorías", "Volver"};
         int opc;
         do {
             opc = Menu.Menu("Inventario Productos", "Elija una opción", opcs, "Agregar");
