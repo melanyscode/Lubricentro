@@ -56,6 +56,11 @@ public class ColaCompra {
         }
         return mensaje.toString();
     }
+    
+    public void vaciarCarrito() {
+      frente = null;
+      ultimo = null;
+  }
 }
     
 
