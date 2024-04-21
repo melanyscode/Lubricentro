@@ -64,8 +64,7 @@ public class PilaCliente {
             if (aux.getElemento().getIdCliente() == id) {
                 return aux.getElemento();
             }
-
-            aux.setSiguiente(aux.getSiguiente());
+            aux = aux.getSiguiente();
         }
         return null;
     }

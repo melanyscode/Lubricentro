@@ -20,6 +20,7 @@ ModuloCompraVenta\NodoCola.class
 ModuloOperario\ColaOperario.class
 Lubricentro\Lubricentro.class
 ModuloTrabajos\NodoArbol.class
+.netbeans_automatic_build
 ModuloTrabajos\ListaTrabajos.class
 Objetos\Cliente.class
 ModuloCompraVenta\ColaVenta.class

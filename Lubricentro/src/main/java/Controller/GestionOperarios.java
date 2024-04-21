@@ -21,6 +21,7 @@ public class GestionOperarios {
     public static ColaOperario colaDisponible = new ColaOperario();
     public static ColaOperario colaTrabajos = new ColaOperario();
     public static ColaOperario trabajosAsignados = new ColaOperario();
+    public static GestionClientesyVehiculos gestionClientes = new GestionClientesyVehiculos();
     
     //por hacer cola de venta 
 
@@ -42,8 +43,8 @@ public class GestionOperarios {
             }
         }
         //verificar si el cliente tiene un id de vehiculo vinculado
-        GestionClientesyVehiculos.agregarBDCola(GestionClientesyVehiculos.pilaClientes);
-        if (GestionClientesyVehiculos.pilaClientes.buscar(id) != null && GestionClientesyVehiculos.pilaClientes.buscar(id).getIdVehiculo() != null) {
+        GestionClientesyVehiculos.agregarBDPila(GestionClientesyVehiculos.pilaClientes);
+        if (GestionClientesyVehiculos.pilaClientes.buscar(id) != null && GestionClientesyVehiculos.pilaClientes.buscar(id).getIdVehiculo() != 0) {
             int idServicio = 0;
             int idCliente = 0;
             double precio = 0;
@@ -52,9 +53,8 @@ public class GestionOperarios {
             Cliente c = GestionClientesyVehiculos.pilaClientes.buscar(id);
 
             //mostrar la informacion de servicio y elegir 
-            GestionTrabajos.listaTrabajos.agregarBDaLista();
-            String mensaje = "Trabajos Disponibles" + GestionTrabajos.listaTrabajos.toString();
-            String[] opcs = {"1", "2", "3", "4", "5"};
+            String mensaje = "Trabajos Disponibles \n" + GestionTrabajos.listaTrabajos.toString();
+            String[] opcs = {"1", "2", "3", "4", "5", "Cancelar"};
             int opc = JOptionPane.showOptionDialog(null, mensaje, "Seleccione un servicio", 0, JOptionPane.QUESTION_MESSAGE, null, opcs, "1");
             switch (opc) {
                 case 0:
@@ -70,6 +70,66 @@ public class GestionOperarios {
                             + "Cliente: " + idCliente + "\n"
                             + "Operario: " + idOperario + "\n"
                             + "Precio: " + precio);
+                    break;
+                case 1: 
+                    TrabajoRealizado t2 = GestionTrabajos.listaTrabajos.buscarId(2);
+                    colaDisponible.agregarBDaCola();
+                    idServicio = 1;
+                    idCliente = c.getIdCliente();
+                    precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                    idOperario = colaDisponible.desencolar().getIdOperario();
+                    Venta venta2 = new Venta(idServicio, precio, idCliente, idOperario);
+                    JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
+                            + "Servicio: " + t2.getDescripcion() + "\n"
+                            + "Cliente: " + idCliente + "\n"
+                            + "Operario: " + idOperario + "\n"
+                            + "Precio: " + precio);
+                    break;
+                case 2: 
+                    TrabajoRealizado t3 = GestionTrabajos.listaTrabajos.buscarId(3);
+                    colaDisponible.agregarBDaCola();
+                    idServicio = 1;
+                    idCliente = c.getIdCliente();
+                    precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                    idOperario = colaDisponible.desencolar().getIdOperario();
+                    Venta venta3 = new Venta(idServicio, precio, idCliente, idOperario);
+                    JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
+                            + "Servicio: " + t3.getDescripcion() + "\n"
+                            + "Cliente: " + idCliente + "\n"
+                            + "Operario: " + idOperario + "\n"
+                            + "Precio: " + precio);
+                    break;
+                case 3: 
+                    TrabajoRealizado t4 = GestionTrabajos.listaTrabajos.buscarId(4);
+                    colaDisponible.agregarBDaCola();
+                    idServicio = 1;
+                    idCliente = c.getIdCliente();
+                    precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                    idOperario = colaDisponible.desencolar().getIdOperario();
+                    Venta venta4 = new Venta(idServicio, precio, idCliente, idOperario);
+                    JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
+                            + "Servicio: " + t4.getDescripcion() + "\n"
+                            + "Cliente: " + idCliente + "\n"
+                            + "Operario: " + idOperario + "\n"
+                            + "Precio: " + precio);
+                    break;
+                case 4: 
+                TrabajoRealizado t5 = GestionTrabajos.listaTrabajos.buscarId(5);
+                    colaDisponible.agregarBDaCola();
+                    idServicio = 1;
+                    idCliente = c.getIdCliente();
+                    precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                    idOperario = colaDisponible.desencolar().getIdOperario();
+                    Venta venta5 = new Venta(idServicio, precio, idCliente, idOperario);
+                    JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
+                            + "Servicio: " + t5.getDescripcion() + "\n"
+                            + "Cliente: " + idCliente + "\n"
+                            + "Operario: " + idOperario + "\n"
+                            + "Precio: " + precio);
+                    break;
+                case 5: 
+                    OperarioMenu();
+                    break;
 
             }
         } else {

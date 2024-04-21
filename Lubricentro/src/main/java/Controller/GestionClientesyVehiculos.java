@@ -223,7 +223,7 @@ public class GestionClientesyVehiculos {
         }
     }
 
-    public static void agregarBDCola(PilaCliente pila) {
+    public static void agregarBDPila(PilaCliente pila) {
         PreparedStatement preState = null;
         try {
             conexion.setConexion();
