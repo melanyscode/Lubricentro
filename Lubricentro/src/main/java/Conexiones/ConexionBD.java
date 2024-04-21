@@ -15,6 +15,7 @@ public class ConexionBD {
     String url = "jdbc:mysql://localhost:3306/lubricentro_jomean";
     String username = "root";
     String password = "Ameli@040699";
+    
 
     public void setConexion() {
         try {
