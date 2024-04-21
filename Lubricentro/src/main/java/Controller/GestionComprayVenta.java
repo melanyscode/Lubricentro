@@ -96,7 +96,7 @@ public class GestionComprayVenta {
             int idFactura = obtenerUltimoIdFactura(conexion); // Método para obtener el último ID de factura
 
             // Registrar la venta
-            String consultaVenta = "INSERT INTO venta (id_cliente, total, id_factura) VALUES (?, ?, ?)";
+            String consultaVenta = "INSERT INTO venta (id_cliente, precio, id_factura) VALUES (?, ?, ?)";
             conexion.setConsulta(consultaVenta);
 
             conexion.getConsulta().setInt(1, idCliente);
