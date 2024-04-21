@@ -40,6 +40,13 @@ public class Venta {
         this.idCliente = idCliente;
     }
 
+    public Venta(double precio, int idServicio, int idCliente) {
+        this.precio = precio;
+        this.idServicio = idServicio;
+        this.idCliente = idCliente;
+    }
+    
+
     public Venta(int idVenta, double precio, int idServicio, int idCliente) {
         this.idVenta = idVenta;
         this.precio = precio;

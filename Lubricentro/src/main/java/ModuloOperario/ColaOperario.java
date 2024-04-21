@@ -55,6 +55,11 @@ public class ColaOperario {
         inicio = inicio.getSiguiente();
         return aux;
     }
+    
+    public void vaciarCola(){
+        inicio = null;
+        fin = null;
+    }
 
     public Operario primeroEnCola() {
         return inicio.getOperario();
@@ -62,7 +67,7 @@ public class ColaOperario {
 
     //impri cola 
     public String toString() {
-        String mensaje = "Trabajos en ejecución:\n";
+        String mensaje = "";
         if (isEmpty()) {
             mensaje += "No hay operarios realizando trabajos";
         }
@@ -74,7 +79,7 @@ public class ColaOperario {
             } else {
                 disponible = "No";
             }
-            mensaje += aux.getOperario().getNombre() + "Disponibilidad: " + disponible;
+            mensaje += aux.getOperario().getNombre() + " Disponibilidad: " + disponible;
             aux = aux.getSiguiente();
         }
         return mensaje;
@@ -87,7 +92,7 @@ public class ColaOperario {
             conexion.setConexion();
             conexion.setConsulta("SELECT * FROM operario WHERE disponible = ?");
             preState = conexion.getConsulta();
-            preState.setInt(1, 1);
+            preState.setBoolean(1, true);
 
             ResultSet rs = preState.executeQuery();
             while (rs.next()) {
@@ -102,13 +107,13 @@ public class ColaOperario {
             conexion.setConexion();
             conexion.setConsulta("SELECT * FROM operario WHERE disponible = ?");
             preState = conexion.getConsulta();
-            preState.setInt(1, 0);
+            preState.setBoolean(1, false);
 
             ResultSet rsEjecucion = preState.executeQuery();
-            while (rs.next()) {
+            while (rsEjecucion.next()) {
                 String nombre = rsEjecucion.getString("nombre");
-                int id = rs.getInt("id_operario");
-                boolean disponible = rs.getBoolean("disponible");
+                int id = rsEjecucion.getInt("id_operario");
+                boolean disponible = rsEjecucion.getBoolean("disponible");
                 Operario operario = new Operario(nombre, id, disponible);
                 GestionOperarios.colaTrabajos.insertar(operario);
             }
