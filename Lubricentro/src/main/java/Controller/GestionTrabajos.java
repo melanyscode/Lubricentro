@@ -26,7 +26,7 @@ public class GestionTrabajos {
     //lista de trabajos terminados 
 
     private void agregar() {
-        //logica para insertar - no hay estructura para guardar los trabajos pero 
+        //logica para insertar - no hay estructura para guardar los trabajos
         try {
 
             double precio = 0;
