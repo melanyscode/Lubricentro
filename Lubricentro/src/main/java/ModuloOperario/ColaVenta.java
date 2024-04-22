@@ -4,8 +4,11 @@
  */
 package ModuloOperario;
 import Conexiones.ConexionBD;
+import Controller.GestionOperarios;
+import static Controller.GestionTrabajos.listaTrabajos;
 import Objetos.Venta;
 import java.sql.*;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Melanie Gutierrez
@@ -21,7 +24,10 @@ public class ColaVenta {
         this.fin = null;
         this.size = 0;
     }
-
+ public void vaciarCola(){
+        inicio = null;
+        fin = null;
+    }
     
 
     //metodos
@@ -57,105 +63,84 @@ public class ColaVenta {
         return inicio.getVenta();
     }
 
-    //impri cola 
-//    public String toString() {
-//        String mensaje = "Trabajos en ejecución:\n";
-//        if (isEmpty()) {
-//            mensaje += "No hay operarios realizando trabajos";
-//        }
-//        NodoVenta aux = inicio;
-//        while (aux != null) {
-//            String disponible = "";
-//            if (aux.getVenta().isDisponible()) {
-//                disponible = "Sí";
-//            } else {
-//                disponible = "No";
-//            }
-//            mensaje += aux.getVenta().getNombre() + "Disponibilidad: " + disponible;
-//            aux = aux.getSiguiente();
-//        }
-//        return mensaje;
-//    }
+   // impri cola 
+    public String toString() {
+        String mensaje = "Trabajos en ejecución:\n";
+        if (isEmpty()) {
+            mensaje += "No hay operarios realizando trabajos";
+        }
+        NodoVenta aux = inicio;
+        while (aux != null) {
+           String servicio = listaTrabajos.buscarId( aux.getVenta().getIdServicio()).getDescripcion();
+          
+            mensaje += "Servicio " + servicio + "Operario: "  ;
+            aux = aux.getSiguiente();
+        }
+        return mensaje;
+    }
 
-    //metodo para agregar BD a la Cola (solo se agregan los que estan disponibles para hacer trabajos 
-//    public void agregarBDaCola() {
-//        PreparedStatement preState = null;
-//        try {
-//            conexion.setConexion();
-//            conexion.setConsulta("SELECT * FROM venta WHERE disponible = ?");
-//            preState = conexion.getConsulta();
-//            preState.setInt(1, 1);
-//
-//            ResultSet rs = preState.executeQuery();
-//            while (rs.next()) {
-//                String nombre = rs.getString("nombre");
-//                int id = rs.getInt("id_operario");
-//                boolean disponible = rs.getBoolean("disponible");
-//                Operario operario = new Operario(nombre, id, disponible);
-//                GestionOperarios.colaDisponible.insertar(operario);
-//            }
-//
-//            //agregar los que estan en ejecucion
-//            conexion.setConexion();
-//            conexion.setConsulta("SELECT * FROM operario WHERE disponible = ?");
-//            preState = conexion.getConsulta();
-//            preState.setInt(1, 0);
-//
-//            ResultSet rsEjecucion = preState.executeQuery();
-//            while (rs.next()) {
-//                String nombre = rsEjecucion.getString("nombre");
-//                int id = rs.getInt("id_operario");
-//                boolean disponible = rs.getBoolean("disponible");
-//                Operario operario = new Operario(nombre, id, disponible);
-//                GestionOperarios.colaTrabajos.insertar(operario);
-//            }
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
-//        } finally {
-//            try {
-//                if (preState != null) {
-//                    preState.close();
-//                }
-//                conexion.cerrarConexion();
-//            } catch (Exception e) {
-//                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
-//            }
-//        }
-//    }
-//
-//    //metodo para agregar cola a la BD
-//    public void agregarColaBD(ColaOperario cola) {
-//        if (cola.isEmpty()) {
-//            JOptionPane.showMessageDialog(null, "No hay trabajos en cola");
-//        } else {
-//            PreparedStatement preState = null;
-//            try {
-//                conexion.setConexion();
-//                conexion.setConsulta("UPDATE operario SET disponible = ? WHERE id_operario = ?");
-//                preState = conexion.getConsulta();
-//                NodoCola aux = inicio;
-//                while(aux != null){
-//                    Operario o = aux.getOperario();
-//                    preState.setBoolean(1, o.isDisponible());
-//                    preState.executeUpdate();
-//                    aux = aux.getSiguiente();
-//                }
-//                
-//                
-//            } catch (Exception e) {
-//                JOptionPane.showMessageDialog(null, "Error: " + e);
-//            } finally {
-//                try {
-//                    if (preState != null) {
-//                        preState.close();
-//                    }
-//                    conexion.cerrarConexion();
-//                } catch (Exception e) {
-//                    JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
-//                }
-//
-//            }
-//        }
-//    }
+    //agregar bd a la cola de venta 
+    public void agregarBDaCola() {
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM venta WHERE id_servicio IS NOT NULL");
+            preState = conexion.getConsulta();
+         
+            ResultSet rs = preState.executeQuery();
+            while (rs.next()) {
+                int idVenta = rs.getInt("id_venta");
+                int idCliente = rs.getInt("id_cliente");
+                int idServicio = rs.getInt("id_servicio");
+                int idOperario = rs.getInt("id_operario");
+                double precio = rs.getDouble("precio");
+               Venta v = new Venta(idVenta, precio, idServicio, idCliente, idOperario);
+               GestionOperarios.ventaEnCola.insertar(v);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+    }
+
+    //metodo para agregar cola la bd
+    public void agregarColaBD(){
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("INSERT INTO venta (precio, id_servicio, id_cliente, id_operario) VALUES (?,?,?,?");
+            preState = conexion.getConsulta();
+            while(!GestionOperarios.ventaEnCola.isEmpty()){
+                Venta v = GestionOperarios.ventaEnCola.desencolar();
+                preState.setDouble(1, v.getPrecio());
+                preState.setInt(2, v.getIdServicio());
+                preState.setInt(1, v.getIdCliente());
+                preState.setInt(1, v.getIdOperario());
+                
+                //ejecutar update
+                preState.executeUpdate();
+            }
+            
+        } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+    }
 
 }

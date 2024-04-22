@@ -20,41 +20,67 @@ public class Venta {
     private double total;
     private int idServicio;
     private int idCliente;
+    private int idOperario;
+    private int cantidad;
 
     public Venta() {
     }
 
-    public Venta(int idProducto, int idVenta, double precio, double total, int idCliente) {
+    //constructor de venta para la bd
+
+    public Venta(int idProducto, int idVenta, double precio, double total, int idServicio, int idCliente, int idOperario, int cantidad) {
+        this.idProducto = idProducto;
+        this.idVenta = idVenta;
+        this.precio = precio;
+        this.total = total;
+        this.idServicio = idServicio;
+        this.idCliente = idCliente;
+        this.idOperario = idOperario;
+        this.cantidad = cantidad;
+    }
+    //---------------------------------------------------------------------------------------
+    //venta para de producto 
+    //para obtener el id en la bd
+    public Venta(int idProducto, int idVenta, double precio, double total, int idCliente, int cantidad) {   
         this.idProducto = idProducto;
         this.idVenta = idVenta;
         this.precio = precio;
         this.total = total;
         this.idCliente = idCliente;
+        this.cantidad = cantidad;
     }
 
-    public Venta(int idVenta, double precio, double total, int idServicio, int idCliente) {
-        this.idVenta = idVenta;
+    //para construir la venta sin el id(el id lo hace la BD)
+    public Venta(int idProducto, double precio, double total, int idCliente, int cantidad) {
+        this.idProducto = idProducto;
         this.precio = precio;
+        this.total = total;
+        this.idCliente = idCliente;
+        this.cantidad = cantidad;
+    }
+    //----------------------------------------------------------------------------------------
+    // para crear un venta de SERVICIO 
+    // PARA CONSTRUIR LA VENTA DESDE LA BD 
+
+    public Venta(int idVenta, double total, int idServicio, int idCliente, int idOperario) {
+        this.idVenta = idVenta;
         this.total = total;
         this.idServicio = idServicio;
         this.idCliente = idCliente;
+        this.idOperario = idOperario;
     }
+    
+    //PARA CONSTRUIR LA VENTA DESDE EL PROGRAMA 
 
-    public Venta(double precio, int idServicio, int idCliente) {
-        this.precio = precio;
+    public Venta(double total, int idServicio, int idCliente, int idOperario) {
+        this.total = total;
         this.idServicio = idServicio;
         this.idCliente = idCliente;
+        this.idOperario = idOperario;
     }
     
 
-    public Venta(int idVenta, double precio, int idServicio, int idCliente) {
-        this.idVenta = idVenta;
-        this.precio = precio;
-        this.idServicio = idServicio;
-        this.idCliente = idCliente;
-    }
-    
-
+    //----------------------GETTERS AND SETTERS -------------------------------
     public int getIdProducto() {
         return idProducto;
     }
@@ -102,21 +128,28 @@ public class Venta {
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
     }
+    
+     public int getIdOperario() {
+        return idOperario;
+    }
+
+    public void setIdOperario(int idOperario) {
+        this.idOperario = idOperario;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 
     @Override
     public String toString() {
-        ConexionBD conexion = new ConexionBD();
-        try {
-            conexion.setConexion();
-            conexion.setConsulta("SELECT detalle FROM producto WHERE id producto = ?");
-            PreparedStatement preState = conexion.getConsulta();
-            preState.setInt(1, idProducto);
-            ResultSet rs = preState.executeQuery();
-             return "Venta" + "Producto" + rs.getString("detalle") + ", ID Venta: " + idVenta + ", precio: " + precio + ", Total: " + total;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
-        }
-        return "";
+        return "Venta{" + "idProducto=" + idProducto + ", idVenta=" + idVenta + ", precio=" + precio + ", total=" + total + ", idServicio=" + idServicio + ", idCliente=" + idCliente + ", idOperario=" + idOperario + ", cantidad=" + cantidad + '}';
     }
+
+    
 
 }

@@ -29,11 +29,7 @@ public class GestionProductos {
         int idAux = -1;
         String inputID = JOptionPane.showInputDialog(null, "Ingrese el ID del producto");
         if(inputID == null){
-            if(Lubricentro.Lubricentro.isAdmin){
-                menuProductos();
-            }else{
-                menuProductosU();
-            }
+            return;
         }else{
             try {
                  idAux = Integer.parseInt(inputID);
@@ -64,19 +60,16 @@ public class GestionProductos {
                     nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
                     //control de botones de joptionpane, si es null (cuando se da en el boton de "cancelar" se vuelve al menu de productos 
                     if (nombre == null) {
-                        
-                        break;
+                        return;
                     }
                     descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
                     if (descripcion == null) {
-                        menuProductos();
-                        break;
+                        return;
                     }
                     String input = JOptionPane.showInputDialog(null, "Ingrese el precio del producto");
                     //control de botones (cancelar) en este se agrega else para para hacer el parse, en un try catch para identificar si errores de formato
                     if (input == null) {
-                        menuProductos();
-                        break;
+                        return;
                     } else {
                         try {
                             precio = Double.parseDouble(input);
@@ -86,8 +79,7 @@ public class GestionProductos {
                     }
                     String stockInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias");
                     if (stockInput == null) {
-                        menuProductos();
-                        break;
+                        return;
                     } else {
                         try {
                             stock = Integer.parseInt(stockInput);
@@ -98,8 +90,7 @@ public class GestionProductos {
                     //idcategoria 
                  String categoriaInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias", p.getStock());
                 if (categoriaInput == null) {
-                    menuProductos();
-                    break;
+                   return;
                 } else {
                     try {
                         categoria = Integer.parseInt(categoriaInput);
@@ -137,11 +128,7 @@ public class GestionProductos {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea buscar");
         if (idInput == null) {
-            if(Lubricentro.Lubricentro.isAdmin){
-                menuProductos();
-            }else{
-                menuProductosU();
-            }
+            return;
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -169,7 +156,7 @@ public class GestionProductos {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea actualizar");
         if (idInput == null) {
-            menuProductos();
+            return;
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -199,19 +186,16 @@ public class GestionProductos {
                 nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:", p.getNombre());
                 //control de botones de joptionpane, si es null (cuando se da en el boton de "cancelar" se vuelve al menu de productos 
                 if (nombre == null) {
-                    menuProductos();
-                    break;
+                    return;
                 }
                 descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto", p.getDescripcion());
                 if (descripcion == null) {
-                    menuProductos();
-                    break;
+                    return;
                 }
                 String input = JOptionPane.showInputDialog(null, "Ingrese el precio del producto", p.getPrecio());
                 //control de botones (cancelar) en este se agrega else para para hacer el parse, en un try catch para identificar si errores de formato
                 if (input == null) {
-                    menuProductos();
-                    break;
+                    return;
                 } else {
                     try {
                         precio = Double.parseDouble(input);
@@ -221,8 +205,7 @@ public class GestionProductos {
                 }
                 String stockInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias", p.getStock());
                 if (stockInput == null) {
-                    menuProductos();
-                    break;
+                   return;
                 } else {
                     try {
                         stock = Integer.parseInt(stockInput);
@@ -291,7 +274,7 @@ public class GestionProductos {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea eliminar");
         if (idInput == null) {
-            menuProductos();
+           return;
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -325,8 +308,8 @@ public class GestionProductos {
 
             } else {
                 JOptionPane.showMessageDialog(null, "Eliminacion cancelada");
-                menuProductos();
                 conexion.cerrarConexion();
+                return;
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e);

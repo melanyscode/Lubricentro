@@ -20,6 +20,7 @@ ModuloInventario\ListaCircular.class
 ModuloCompraVenta\NodoCola.class
 ModuloOperario\ColaOperario.class
 Lubricentro\Lubricentro.class
+ModuloOperario\ListaVentas.class
 ModuloTrabajos\NodoArbol.class
 ModuloTrabajos\ListaTrabajos.class
 Objetos\Cliente.class
@@ -35,5 +36,6 @@ Controller\GestionOperarios.class
 ModuloInventario\NodoGrafo.class
 Objetos\Venta.class
 Objetos\TrabajoRealizado.class
+ModuloOperario\NodoLista.class
 ModuloCompraVenta\ColaCompra.class
 ModuloInventario\NodoListaIds.class
