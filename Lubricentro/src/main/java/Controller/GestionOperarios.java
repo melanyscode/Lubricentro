@@ -191,6 +191,10 @@ public class GestionOperarios {
         ///FALTA POR TERMINAR NO TOCAR
         ///
         ///
+        //lista de trabajos para leer el tipo de servicio que se le dio al cliente 
+        GestionTrabajos.listaTrabajos.agregarBDaLista();
+        GestionTrabajos.listaTrabajos.agregarListaArbol(GestionTrabajos.listaTrabajos);
+        
         ventaProcesada.agregarBDaLista();
         int idCliente = 0;
         String input = JOptionPane.showInputDialog(null, "Ingrese el id de Cliente para procesar la venta y obtener la factura");
@@ -204,8 +208,50 @@ public class GestionOperarios {
             }
         }
         Venta v = ventaProcesada.buscarId(idCliente);
-        System.out.println(v.toString());
+        //crear factura
+        int idVenta = v.getIdVenta();
+        java.sql.Date fechaActual = new java.sql.Date(System.currentTimeMillis());
+        double precio = v.getPrecio();
+        double iva = precio * 0.13;
+        double total = precio + iva;
+        int idOperario = v.getIdOperario();
+        String nombreOperario = Operarios.
+        int idServicio = v.getIdServicio();
+        String descripcion =  GestionTrabajos.listaTrabajos.buscarId(idServicio).getDescripcion();
 
+        //agregar factura a la BD
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("INSERT INTO factura (id_cliente, fecha, total, id_operaio, id_venta) VALUES (?,?,?,?,?)");
+            preState = conexion.getConsulta();
+
+            preState.setInt(1, idCliente);
+            preState.setDate(2, fechaActual);
+            preState.setDouble(3, total);
+            preState.setInt(4, idOperario);
+            preState.setInt(5, idVenta);
+            preState.executeUpdate();
+            conexion.cerrarConexion();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+        //imprimir factura
+        
+        JOptionPane.showMessageDialog(null, "Factura de Servicio\n"
+                + "Servicio: " + descripcion + "\n"
+                        + "Precio: " + precio + "\n"
+                                + "Total con I.V.A: " + total + "\n"
+                                        + "Operario: " + )
     }
 
     public void OperarioMenu() {
@@ -257,4 +303,6 @@ public class GestionOperarios {
         }
 
     }
+    //buscar operario - PENDIENTE
+    
 }
