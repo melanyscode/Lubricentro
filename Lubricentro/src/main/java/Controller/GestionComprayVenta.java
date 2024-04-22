@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  * @author Melanie Gutierrez
  */
 public class GestionComprayVenta {
-
+    public int cantidad = 0;
     public static Cola listaCompra = new Cola();
     public static ColaVenta listaVenta = new ColaVenta();
     public static ColaCompra listaCompraVenta = new ColaCompra();
@@ -33,18 +33,22 @@ public class GestionComprayVenta {
         carritoCompra.agregar(producto);
     }
 
-    private int obtenerIdOperario() {
-        String input = JOptionPane.showInputDialog(null, "Ingrese el ID del operador:");
-        try {
-            int idOperario = Integer.parseInt(input);
-            return idOperario;
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "ID de operador inválido.", "Error", JOptionPane.ERROR_MESSAGE);
-            return obtenerIdOperario(); // Recursar para pedir un ID válido nuevamente
-        }
-    }
+//    private int obtenerIdOperario() {
+//        String input = JOptionPane.showInputDialog(null, "Ingrese el ID del operador:");
+//        try {
+//            int idOperario = Integer.parseInt(input);
+//            return idOperario;
+//        } catch (NumberFormatException e) {
+//            JOptionPane.showMessageDialog(null, "ID de operador inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+//            return obtenerIdOperario(); // Recursar para pedir un ID válido nuevamente
+//        }
+//    }
 
-    public void realizarCompra() {
+    public void realizarCompra(int idProducto) {
+        if(idProducto == 0){
+            JOptionPane.showMessageDialog(null, "No hay productos en el carrito");
+            return;
+        }
         StringBuilder mensaje = new StringBuilder("Productos comprados:\n");
         int idCliente = 0;
         double totalVenta = 0.0;
@@ -59,7 +63,16 @@ public class GestionComprayVenta {
         imprimirClientesRegistrados();
 
         // Solicitar al usuario que seleccione un cliente
-        idCliente = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el ID del cliente:"));
+        
+        String idClienteInput = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente:");
+        if(idClienteInput == null){
+            return;
+        }else{
+            try {
+                idCliente = Integer.parseInt(idClienteInput);
+            } catch (Exception e) {
+            }
+        }
 
         if (idCliente <= 0) {
             JOptionPane.showMessageDialog(null, "Error: El ID del cliente debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -74,10 +87,32 @@ public class GestionComprayVenta {
 
         // Registrar la venta en la tabla "venta" (SIN fecha_venta)
         try {
+            Producto producto = consultarProductoPorID(idProducto);
             conexion.setConexion();
 
+            // Obtener el ID de la factura generada
+            // Método para obtener el último ID de factura
+
+            // Registrar la venta
+            String consultaVenta = "INSERT INTO venta (id_producto, id_cliente, precio, cantidad) VALUES (?, ?, ?, ?)";
+            conexion.setConsulta(consultaVenta);
+
+            conexion.getConsulta().setInt(1, producto.getId());
+            conexion.getConsulta().setInt(2, idCliente);
+            conexion.getConsulta().setDouble(3, totalVenta);
+            conexion.getConsulta().setInt(4, cantidad);
+            
+
+            conexion.getConsulta().executeUpdate();
+
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(null, mensaje.toString() + "\nTotal: $" + totalVenta, "Compra realizada", JOptionPane.INFORMATION_MESSAGE);
+
+            // Actualizar existencias de productos
+            actualizarExistenciasProductos(conexion);
+            
             // Crear la factura
-            String consultaFactura = "INSERT INTO factura (id_cliente, fecha, total, id_operario) VALUES (?, ?, ?, ?)";
+            String consultaFactura = "INSERT INTO factura (id_cliente, fecha, total) VALUES (?, ?, ?)";
             conexion.setConsulta(consultaFactura);
 
             // Obtener la fecha actual
@@ -87,29 +122,13 @@ public class GestionComprayVenta {
             conexion.getConsulta().setInt(1, idCliente);
             conexion.getConsulta().setDate(2, fechaActual);
             conexion.getConsulta().setDouble(3, totalVenta);
-            conexion.getConsulta().setInt(4, obtenerIdOperario());
+            
+//            conexion.getConsulta().setInt(4, obtenerIdOperario());
 
             // Ejecutar la consulta para crear la factura
             conexion.getConsulta().executeUpdate();
 
-            // Obtener el ID de la factura generada
-            int idFactura = obtenerUltimoIdFactura(conexion); // Método para obtener el último ID de factura
-
-            // Registrar la venta
-            String consultaVenta = "INSERT INTO venta (id_cliente, precio, id_factura) VALUES (?, ?, ?)";
-            conexion.setConsulta(consultaVenta);
-
-            conexion.getConsulta().setInt(1, idCliente);
-            conexion.getConsulta().setDouble(2, totalVenta);
-            conexion.getConsulta().setInt(3, idFactura);
-
-            conexion.getConsulta().executeUpdate();
-
-            // Mostrar mensaje de éxito
-            JOptionPane.showMessageDialog(null, mensaje.toString() + "\nTotal: $" + totalVenta, "Compra realizada", JOptionPane.INFORMATION_MESSAGE);
-
-            // Actualizar existencias de productos
-            actualizarExistenciasProductos(conexion);
+            
 
             // Vaciar el carrito
             carritoCompra.vaciarCarrito();
@@ -171,16 +190,22 @@ public class GestionComprayVenta {
     public void Ventas() {
         String[] opciones = {"Agregar al carrito", "Realizar compra", "Volver"};
         int opcion;
+        int idProducto = 0;
         do {
             opcion = Menu.Menu("Menú Compras", "Lubricentro", opciones, "Agregar al carrito");
             switch (opcion) {
                 case 0:
                     mostrarInventario(); // Mostrar inventario antes de agregar al carrito
-                    int idProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto a agregar al carrito:"));
+                    String idProductoInput = JOptionPane.showInputDialog("Ingrese el ID del producto a agregar al carrito:");
+                    if(idProductoInput == null){
+                        return;
+                    }else{
+                        idProducto = Integer.parseInt(idProductoInput);
+                    }
                     agregarProductoCarrito(idProducto);
                     break;
                 case 1:
-                    realizarCompra();
+                    realizarCompra(idProducto);
                     break;
                 case 2:
                     Lubricentro.Lubricentro.InicioAdmin(); // Volver al menú principal
@@ -192,16 +217,22 @@ public class GestionComprayVenta {
     public void VentasU() {
         String[] opciones = {"Agregar al carrito", "Realizar compra", "Volver"};
         int opcion;
+        int idProducto = 0;
         do {
             opcion = Menu.Menu("Menú Compras", "Lubricentro", opciones, "Agregar al carrito");
             switch (opcion) {
                 case 0:
                     mostrarInventario(); // Mostrar inventario antes de agregar al carrito
-                    int idProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto a agregar al carrito:"));
+                     String idProductoInput = JOptionPane.showInputDialog("Ingrese el ID del producto a agregar al carrito:");
+                    if(idProductoInput == null){
+                        return;
+                    }else{
+                        idProducto = Integer.parseInt(idProductoInput);
+                    }
                     agregarProductoCarrito(idProducto);
                     break;
                 case 1:
-                    realizarCompra();
+                    realizarCompra(idProducto);
                     break;
                 case 2:
                     Lubricentro.Lubricentro.InicioAdmin(); // Volver al menú principal
@@ -212,7 +243,7 @@ public class GestionComprayVenta {
 ///BD/////
 
     public Producto consultarProductoPorID(int idProducto) {
-        Producto producto = null;
+        Producto producto = new Producto();
         try {
             conexion.setConexion();
 
@@ -221,7 +252,8 @@ public class GestionComprayVenta {
             conexion.getConsulta().setInt(1, idProducto);
 
             ResultSet resultado = conexion.getConsulta().executeQuery();
-            if (resultado.next()) {
+            while(resultado.next()) {
+                int idP = resultado.getInt("id_producto");
                 int idCategoria = resultado.getInt("id_categoria");
                 String descripcion = resultado.getString("descripcion");
                 String detalle = resultado.getString("detalle");
@@ -230,10 +262,9 @@ public class GestionComprayVenta {
                 boolean activo = resultado.getInt("activo") == 1; // Convertir el int a boolean
 
                 // Crear un nuevo objeto Producto con los valores obtenidos de la consulta
-                producto = new Producto(idProducto, descripcion, detalle, precio, existencias, idCategoria, activo);
-            } else {
-                System.out.println("Producto no encontrado.");
-            }
+                producto = new Producto(idP, descripcion, detalle, precio, existencias, idCategoria, activo);
+                return producto;
+            } 
         } catch (SQLException error) {
             error.printStackTrace();
         } finally {
@@ -246,6 +277,15 @@ public class GestionComprayVenta {
         Producto producto = consultarProductoPorID(idProducto);
         if (producto != null) {
             carritoCompra.agregar(producto);
+            String input = JOptionPane.showInputDialog(null, "Ingrese la cantidad que desea: ");
+            if(input == null){
+                return;
+            }else{
+                try {
+                    cantidad = Integer.parseInt(input);
+                } catch (Exception e) {
+                }
+            }
             JOptionPane.showMessageDialog(null, "Producto agregado al carrito: " + producto.getNombre(),
                     "Producto Agregado", JOptionPane.INFORMATION_MESSAGE);
         } else {

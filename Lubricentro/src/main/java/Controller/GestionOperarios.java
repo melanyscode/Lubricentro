@@ -9,6 +9,7 @@ import static Lubricentro.Lubricentro.InicioAdmin;
 
 import ModuloOperario.ColaOperario;
 import ModuloOperario.ColaVenta;
+import ModuloOperario.ListaVentas;
 import Objetos.Cliente;
 import Objetos.Operario;
 import Objetos.TrabajoRealizado;
@@ -23,12 +24,19 @@ import java.sql.*;
 public class GestionOperarios {
 
     // agregar la estructura con la que se va a agregar Operarios
-      ConexionBD conexion = new ConexionBD();
+    ConexionBD conexion = new ConexionBD();
+    // para agregar operarios esten disponibles o no disponibles 
+    public static ColaOperario Operarios = new ColaOperario();
+    //agregar los operarios que solo estan disponibles 
     public static ColaOperario colaDisponible = new ColaOperario();
     public static ColaOperario colaTrabajos = new ColaOperario();
-    public static ColaOperario trabajosAsignados = new ColaOperario();
+    //agregar los operarios que no estan disponibles 
+
+    //agregar ventas 
+    // se agrega en el ordenamiento LIFO a la BD 
     public static ColaVenta ventaEnCola = new ColaVenta();
-    public static ColaVenta ventaProcesada = new ColaVenta();
+
+    public static ListaVentas ventaProcesada = new ListaVentas();
     public static GestionClientesyVehiculos gestionClientes = new GestionClientesyVehiculos();
 
     //por hacer cola de venta 
@@ -75,15 +83,15 @@ public class GestionOperarios {
                         Operario o = colaDisponible.desencolar();
                         idOperario = o.getIdOperario();
                         o.setDisponible(false);
-                        trabajosAsignados.insertar(o);
+                        colaTrabajos.insertar(o);
                         actualizarBD(o);
-                        Venta venta = new Venta(idServicio, precio, idCliente, idOperario);
+                        Venta venta = new Venta(precio, idServicio, idCliente, idOperario);
                         JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos:\n"
                                 + "Servicio: " + t.getDescripcion() + "\n"
                                 + "Cliente: " + idCliente + "\n"
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
-                         ventaEnCola.insertar(venta);
+                        ventaEnCola.insertar(venta);
                         break;
                     case 1:
                         TrabajoRealizado t2 = GestionTrabajos.listaTrabajos.buscarId(2);
@@ -93,15 +101,15 @@ public class GestionOperarios {
                         Operario o2 = colaDisponible.desencolar();
                         idOperario = o2.getIdOperario();
                         o2.setDisponible(false);
-                        trabajosAsignados.insertar(o2);
+                        colaTrabajos.insertar(o2);
                         actualizarBD(o2);
-                        Venta venta2 = new Venta(idServicio, precio, idCliente, idOperario);
+                        Venta venta2 = new Venta(precio, idServicio, idCliente, idOperario);
                         JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
                                 + "Servicio: " + t2.getDescripcion() + "\n"
                                 + "Cliente: " + idCliente + "\n"
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
-                         ventaEnCola.insertar(venta2);
+                        ventaEnCola.insertar(venta2);
                         break;
                     case 2:
                         TrabajoRealizado t3 = GestionTrabajos.listaTrabajos.buscarId(3);
@@ -111,15 +119,15 @@ public class GestionOperarios {
                         Operario o3 = colaDisponible.desencolar();
                         idOperario = o3.getIdOperario();
                         o3.setDisponible(false);
-                        trabajosAsignados.insertar(o3);
+                        colaTrabajos.insertar(o3);
                         actualizarBD(o3);
-                        Venta venta3 = new Venta(idServicio, precio, idCliente, idOperario);
+                        Venta venta3 = new Venta(precio, idServicio, idCliente, idOperario);
                         JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
                                 + "Servicio: " + t3.getDescripcion() + "\n"
                                 + "Cliente: " + idCliente + "\n"
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
-                         ventaEnCola.insertar(venta3);
+                        ventaEnCola.insertar(venta3);
                         break;
                     case 3:
                         TrabajoRealizado t4 = GestionTrabajos.listaTrabajos.buscarId(4);
@@ -129,15 +137,15 @@ public class GestionOperarios {
                         Operario o4 = colaDisponible.desencolar();
                         idOperario = o4.getIdOperario();
                         o4.setDisponible(false);
-                        trabajosAsignados.insertar(o4);
+                        colaTrabajos.insertar(o4);
                         actualizarBD(o4);
-                        Venta venta4 = new Venta(idServicio, precio, idCliente, idOperario);
+                        Venta venta4 = new Venta(precio, idServicio, idCliente, idOperario);
                         JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
                                 + "Servicio: " + t4.getDescripcion() + "\n"
                                 + "Cliente: " + idCliente + "\n"
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
-                         ventaEnCola.insertar(venta4);
+                        ventaEnCola.insertar(venta4);
                         break;
                     case 4:
                         TrabajoRealizado t5 = GestionTrabajos.listaTrabajos.buscarId(5);
@@ -147,9 +155,9 @@ public class GestionOperarios {
                         Operario o5 = colaDisponible.desencolar();
                         idOperario = o5.getIdOperario();
                         o5.setDisponible(false);
-                        trabajosAsignados.insertar(o5);
+                        colaTrabajos.insertar(o5);
                         actualizarBD(o5);
-                        Venta venta5 = new Venta(idServicio, precio, idCliente, idOperario);
+                        Venta venta5 = new Venta(precio, idServicio, idCliente, idOperario);
                         JOptionPane.showMessageDialog(null, "Trabajo agregado a la Cola de trabajos: \n"
                                 + "Servicio: " + t5.getDescripcion() + "\n"
                                 + "Cliente: " + idCliente + "\n"
@@ -161,8 +169,8 @@ public class GestionOperarios {
                     case 5:
                         OperarioMenu();
                         break;
-
                 }
+                ventaEnCola.vaciarCola();
             } else {
                 JOptionPane.showMessageDialog(null, "El cliente no tiene un vehiculo asociado, intentelo de nuevo");
             }
@@ -178,10 +186,27 @@ public class GestionOperarios {
                 + "Operarios con trabajos asignados\n" + colaTrabajos.toString());
     }
 
-    public void Procesar() {
-        //el operario procesa el trabajo asignado
+    public void FacturaID() {
+        ///
+        ///FALTA POR TERMINAR NO TOCAR
+        ///
+        ///
+        ventaProcesada.agregarBDaLista();
+        int idCliente = 0;
+        String input = JOptionPane.showInputDialog(null, "Ingrese el id de Cliente para procesar la venta y obtener la factura");
+        if (input == null) {
+            return;
+        } else {
+            try {
+                idCliente = Integer.parseInt(input);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+            }
+        }
+        Venta v = ventaProcesada.buscarId(idCliente);
+        System.out.println(v.toString());
+
     }
-    
 
     public void OperarioMenu() {
         String[] opcs = {"Asignar trabajo", "Consultar Disponibilidad Operario", "Procesar", "Volver"};
@@ -194,8 +219,9 @@ public class GestionOperarios {
                     break;
                 case 1:
                     consultarDispOperario();
+                    break;
                 case 2:
-                    Procesar();
+                    FacturaID();
                     break;
                 case 3:
                     InicioAdmin();
@@ -205,9 +231,8 @@ public class GestionOperarios {
     }
 
     //metodo de base de datos 
-    
-    public void actualizarBD(Operario operario){
-        PreparedStatement preState = null; 
+    public void actualizarBD(Operario operario) {
+        PreparedStatement preState = null;
         try {
             //actualizar disponibilidad del operario en la bd
             conexion.setConexion();
@@ -217,9 +242,9 @@ public class GestionOperarios {
             preState.setInt(2, operario.getIdOperario());
             preState.executeUpdate();
             conexion.cerrarConexion();
-            
+
         } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
         } finally {
             try {
                 if (preState != null) {
@@ -230,8 +255,6 @@ public class GestionOperarios {
                 JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
             }
         }
-    
-    
-}
-   
+
+    }
 }

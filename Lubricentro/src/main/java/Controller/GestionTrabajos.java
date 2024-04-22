@@ -30,11 +30,14 @@ public class GestionTrabajos {
         try {
 
             double precio = 0;
-            String descripcion = JOptionPane.showInputDialog(null, "Ignrese una descripcion del trabajo: ");
+            String descripcion = JOptionPane.showInputDialog(null, "Ingrese una descripcion del trabajo: ");
             if (descripcion == null) {
-
+                return;
             }
-            String precioInput = JOptionPane.showInputDialog(null, "Ingrese el precio del servicio");
+            String precioInput = JOptionPane.showInputDialog(null, "Ingrese el precio del trabajo");
+            if(precioInput == null){
+                return;
+            }
             try {
                 precio = Double.parseDouble(precioInput);
             } catch (Exception e) {
@@ -67,9 +70,9 @@ public class GestionTrabajos {
 
     private void actualizar() {
         int id = 0;
-        String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea eliminar");
+        String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del trabajo que actualizar");
         if (idInput == null) {
-            menuTrabajos();
+            return;
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -90,11 +93,11 @@ public class GestionTrabajos {
 
                 descripcion = JOptionPane.showInputDialog(null, "Ingrese una nueva descripción del servicio", t.getDescripcion());
                 if (descripcion == null) {
-                    menuTrabajos();
+                   return;
                 }
                 String precioInput = JOptionPane.showInputDialog(null, "Modifiqué el precio", t.getPrecio());
                 if (precioInput == null) {
-                    menuTrabajos();
+                    return;
                 }
                 try {
                     precio = Double.parseDouble(precioInput);
@@ -103,7 +106,7 @@ public class GestionTrabajos {
                 }
                 boolean activo = false;
                 String[] options = {"Disponible", "No disponible"};
-                String activoInput = (String) JOptionPane.showInputDialog(null, "¿El servicio esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                String activoInput = (String) JOptionPane.showInputDialog(null, "¿El servicio esta disponible?", "Servicio Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                 if (activoInput.endsWith("Disponible")) {
                     activo = true;
                 } else {

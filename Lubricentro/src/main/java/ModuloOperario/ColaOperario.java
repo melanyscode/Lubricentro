@@ -79,7 +79,7 @@ public class ColaOperario {
             } else {
                 disponible = "No";
             }
-            mensaje += aux.getOperario().getNombre() + " Disponibilidad: " + disponible;
+            mensaje += aux.getOperario().getNombre() + " Disponibilidad: " + disponible + "\n";
             aux = aux.getSiguiente();
         }
         return mensaje;
