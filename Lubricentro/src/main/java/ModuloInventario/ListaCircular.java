@@ -235,5 +235,5 @@ public class ListaCircular {
             GestionProductos.arbolProductos.insertar(p);
             aux = aux.getSiguiente();
         } while (aux != inicio);
-    }
+    } 
 }

@@ -192,7 +192,7 @@ public class GestionComprayVenta {
         int opcion;
         int idProducto = 0;
         do {
-            opcion = Menu.Menu("Menú Compras", "Lubricentro", opciones, "Agregar al carrito");
+            opcion = Menu.Menu("Menú Compras", "Gestion de Compras", opciones, "Agregar al carrito");
             switch (opcion) {
                 case 0:
                     mostrarInventario(); // Mostrar inventario antes de agregar al carrito

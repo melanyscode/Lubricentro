@@ -26,7 +26,7 @@ public class Lubricentro {
    
 
     public static void main(String[] args) {
-        InicioAdmin();
+       InicioAdmin();
     }
 
     public static void InicioAdmin() {
@@ -122,11 +122,11 @@ public class Lubricentro {
                 Inicio();
             } else {
                 //sino existe se le pide la contraseña para registrar el nuevo usuario
-                String password = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario");
+                String password = JOptionPane.showInputDialog(null, "Ingrese una contraseña");
                 if (password == null) {
                     Inicio();
                 }
-                String nombre = JOptionPane.showInputDialog(null, "Ingrese el del operario");
+                String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del operario");
                 if(nombre == null){
                     Inicio();
                 }
