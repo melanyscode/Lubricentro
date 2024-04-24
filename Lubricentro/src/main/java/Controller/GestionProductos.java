@@ -25,103 +25,74 @@ public class GestionProductos {
     ConexionBD conexion = new ConexionBD();
 
     private void agregar() {
-        //logica para insertar (pedir al usuario la informacion del producto y despues agregarla a la lista circular
-        int idAux = -1;
-        String inputID = JOptionPane.showInputDialog(null, "Ingrese el ID del producto");
-        if(inputID == null){
-            return;
-        }else{
-            try {
-                 idAux = Integer.parseInt(inputID);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+
+        // si se encontro el id que se mando la consulta 
+        //si no se encontro se le pide toda la informacion del producto al usuario 
+        String nombre = "";
+        String descripcion = "";
+        double precio = 0;
+        int stock = 0;
+        int categoria = 0;
+        boolean activo = true;
+
+        while (true) {
+            nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
+            //control de botones de joptionpane, si es null (cuando se da en el boton de "cancelar" se vuelve al menu de productos 
+            if (nombre == null) {
+                return;
             }
-        }
-
-        try {
-            //hacer conexion y consulta a la base de datos
-            conexion.setConexion();
-            conexion.setConsulta("SELECT * FROM producto WHERE id_producto = " + idAux);
-            ResultSet consulta = conexion.getResultado();
-
-            // si se encontro el id que se mando la consulta 
-            if (consulta != null && consulta.next()) {
-                JOptionPane.showMessageDialog(null, "El producto ya esta en el inventario, intente actualizar el producto o agregar un producto nuevo");
+            descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
+            if (descripcion == null) {
+                return;
+            }
+            String input = JOptionPane.showInputDialog(null, "Ingrese el precio del producto");
+            //control de botones (cancelar) en este se agrega else para para hacer el parse, en un try catch para identificar si errores de formato
+            if (input == null) {
+                return;
             } else {
-                //si no se encontro se le pide toda la informacion del producto al usuario 
-                String nombre = "";
-                String descripcion = "";
-                double precio = 0;
-                int stock = 0;
-                int categoria = 0;
-                boolean activo = true;
-
-                while (true) {
-                    nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:");
-                    //control de botones de joptionpane, si es null (cuando se da en el boton de "cancelar" se vuelve al menu de productos 
-                    if (nombre == null) {
-                        return;
-                    }
-                    descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto");
-                    if (descripcion == null) {
-                        return;
-                    }
-                    String input = JOptionPane.showInputDialog(null, "Ingrese el precio del producto");
-                    //control de botones (cancelar) en este se agrega else para para hacer el parse, en un try catch para identificar si errores de formato
-                    if (input == null) {
-                        return;
-                    } else {
-                        try {
-                            precio = Double.parseDouble(input);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
-                        }
-                    }
-                    String stockInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias");
-                    if (stockInput == null) {
-                        return;
-                    } else {
-                        try {
-                            stock = Integer.parseInt(stockInput);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
-                        }
-                    }
-                    //idcategoria 
-                 String categoriaInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias", p.getStock());
-                if (categoriaInput == null) {
-                   return;
-                } else {
-                    try {
-                        categoria = Integer.parseInt(categoriaInput);
-                    } catch (Exception e) {
-                        JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
-                    }
+                try {
+                    precio = Double.parseDouble(input);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
                 }
-                    String[] options = {"Disponible", "No disponible"};
-                    String activoInput = (String) JOptionPane.showInputDialog(null, "¿El producto esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-                    if (activoInput.endsWith("Disponible")) {
-                        activo = true;
-                    } else {
-                        activo = false;
-                    }
-                    break; //hacer un break para salir del while 
-                }
-                //Crear producto
-                Producto p1 = new Producto(nombre, descripcion, precio, stock, categoria, activo);
-                //agregar producto a la lsita
-                listaProductos.agregar(p1);
-                //agregar lista a la bd 
-                listaProductos.agregarListaBD(listaProductos);
-
             }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e);
-        } finally {
-            conexion.cerrarConexion();
+            String stockInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias");
+            if (stockInput == null) {
+                return;
+            } else {
+                try {
+                    stock = Integer.parseInt(stockInput);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+                }
+            }
+            //idcategoria 
+            String categoriaInput = JOptionPane.showInputDialog(null, "Ingrese la categoria del producto.\n1. Aceites\n2.Grasas");
+            if (categoriaInput == null) {
+                return;
+            } else {
+                try {
+                    categoria = Integer.parseInt(categoriaInput);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+                }
+            }
+            String[] options = {"Disponible", "No disponible"};
+            String activoInput = (String) JOptionPane.showInputDialog(null, "¿El producto esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+            if (activoInput.endsWith("Disponible")) {
+                activo = true;
+            } else {
+                activo = false;
+            }
+            break; //hacer un break para salir del while 
         }
-
+        //Crear producto
+        Producto p1 = new Producto(nombre, descripcion, precio, stock, categoria, activo);
+        //agregar producto a la lsita
+        listaProductos.agregar(p1);
+        //agregar lista a la bd 
+        listaProductos.agregarListaBD(listaProductos);
+        JOptionPane.showMessageDialog(null, "Producto agregado al inventario exitosamente");
     }
 
     private void buscar() {
@@ -205,7 +176,7 @@ public class GestionProductos {
                 }
                 String stockInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias", p.getStock());
                 if (stockInput == null) {
-                   return;
+                    return;
                 } else {
                     try {
                         stock = Integer.parseInt(stockInput);
@@ -213,8 +184,7 @@ public class GestionProductos {
                         JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
                     }
                 }
-                
-                
+
                 String[] options = {"Disponible", "No disponible"};
                 String activoInput = (String) JOptionPane.showInputDialog(null, "¿El producto esta disponible?", "Producto Disponible", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                 if (activoInput.endsWith("Disponible")) {
@@ -274,7 +244,7 @@ public class GestionProductos {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del producto que desea eliminar");
         if (idInput == null) {
-           return;
+            return;
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -317,22 +287,24 @@ public class GestionProductos {
             conexion.cerrarConexion();
         }
     }
-    public void mostrar(){
+
+    public void mostrar() {
         listaProductos.agregarBDaLista();
         JOptionPane.showMessageDialog(null, listaProductos.toString());
     }
-    public void mostrarCategoriasProductos(){
+
+    public void mostrarCategoriasProductos() {
         //agregar parte de grafos aca
-        
+
         //agregar bd a  lista
         listaProductos.agregarBDaLista();
-        
+
         //agregar lista a el grafo para imprimirlo 
         int size = listaProductos.size();
         System.out.println(size);
         grafoRelaciones = new Grafo(size + 1);
         listaProductos.agregarListaGrafo();
-        
+
         //imprimir con el grafo
         JOptionPane.showMessageDialog(null, "Inventario Categorias\n" + grafoRelaciones.imprimirMatrizAdyacencia());
     }
@@ -358,7 +330,7 @@ public class GestionProductos {
                 case 4:
                     mostrarCategoriasProductos();
                     break;
-                case 5: 
+                case 5:
                     Lubricentro.Lubricentro.InicioAdmin();
             }
         } while (opc != opcs.length);

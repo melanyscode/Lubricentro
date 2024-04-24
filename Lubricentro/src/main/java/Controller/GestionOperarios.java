@@ -50,7 +50,8 @@ public class GestionOperarios {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente");
         if (idInput == null) {
-            OperarioMenu();
+             colaDisponible.vaciarCola();
+            return;
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -76,10 +77,9 @@ public class GestionOperarios {
                 switch (opc) {
                     case 0:
                         TrabajoRealizado t = GestionTrabajos.listaTrabajos.buscarId(1);
-
                         idServicio = 1;
                         idCliente = c.getIdCliente();
-                        precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                        precio = t.getPrecio();
                         Operario o = colaDisponible.desencolar();
                         idOperario = o.getIdOperario();
                         o.setDisponible(false);
@@ -92,12 +92,14 @@ public class GestionOperarios {
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta);
+                        ventaEnCola.agregarColaBD();
+                        GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 1:
                         TrabajoRealizado t2 = GestionTrabajos.listaTrabajos.buscarId(2);
-                        idServicio = 1;
+                        idServicio = 2;
                         idCliente = c.getIdCliente();
-                        precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                        precio = t2.getPrecio();
                         Operario o2 = colaDisponible.desencolar();
                         idOperario = o2.getIdOperario();
                         o2.setDisponible(false);
@@ -110,12 +112,14 @@ public class GestionOperarios {
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta2);
+                        ventaEnCola.agregarColaBD();
+                        GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 2:
                         TrabajoRealizado t3 = GestionTrabajos.listaTrabajos.buscarId(3);
-                        idServicio = 1;
+                        idServicio = 3;
                         idCliente = c.getIdCliente();
-                        precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                        precio = t3.getPrecio();
                         Operario o3 = colaDisponible.desencolar();
                         idOperario = o3.getIdOperario();
                         o3.setDisponible(false);
@@ -128,12 +132,14 @@ public class GestionOperarios {
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta3);
+                        ventaEnCola.agregarColaBD();
+                        GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 3:
                         TrabajoRealizado t4 = GestionTrabajos.listaTrabajos.buscarId(4);
-                        idServicio = 1;
+                        idServicio = 4;
                         idCliente = c.getIdCliente();
-                        precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                        precio = t4.getPrecio();
                         Operario o4 = colaDisponible.desencolar();
                         idOperario = o4.getIdOperario();
                         o4.setDisponible(false);
@@ -146,12 +152,15 @@ public class GestionOperarios {
                                 + "Operario: " + idOperario + "\n"
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta4);
+                        ventaEnCola.agregarColaBD();
+                        GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 4:
                         TrabajoRealizado t5 = GestionTrabajos.listaTrabajos.buscarId(5);
-                        idServicio = 1;
+                        idServicio = 5;
                         idCliente = c.getIdCliente();
-                        precio = GestionTrabajos.listaTrabajos.buscarId(1).getPrecio();
+                        precio = t5.getPrecio();
+                        System.out.println(precio);
                         Operario o5 = colaDisponible.desencolar();
                         idOperario = o5.getIdOperario();
                         o5.setDisponible(false);
@@ -165,12 +174,17 @@ public class GestionOperarios {
                                 + "Precio: " + precio);
                         //guardar venta en cola de espera 
                         ventaEnCola.insertar(venta5);
+                        ventaEnCola.agregarColaBD();
+                        GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 5:
+                        GestionTrabajos.listaTrabajos.vaciarLista();
+                        colaDisponible.vaciarCola();
                         OperarioMenu();
                         break;
                 }
                 ventaEnCola.vaciarCola();
+                 colaDisponible.vaciarCola();
             } else {
                 JOptionPane.showMessageDialog(null, "El cliente no tiene un vehiculo asociado, intentelo de nuevo");
             }
@@ -184,16 +198,24 @@ public class GestionOperarios {
         JOptionPane.showMessageDialog(null, "Operarios:\n " + colaDisponible.toString() + "\n"
                 + "-------------------------------------------\n"
                 + "Operarios con trabajos asignados\n" + colaTrabajos.toString());
+        colaDisponible.vaciarCola();
+        colaTrabajos.vaciarCola();
     }
+        
 
     public void FacturaID() {
         ///
         ///FALTA POR TERMINAR NO TOCAR
         ///
         ///
+        //lista de trabajos para leer el tipo de servicio que se le dio al cliente 
+        GestionTrabajos.listaTrabajos.agregarBDaLista();
+        GestionTrabajos.listaTrabajos.agregarListaArbol(GestionTrabajos.listaTrabajos);
+
         ventaProcesada.agregarBDaLista();
+        System.out.println(ventaProcesada.toString());
         int idCliente = 0;
-        String input = JOptionPane.showInputDialog(null, "Ingrese el id de Cliente para procesar la venta y obtener la factura");
+        String input = JOptionPane.showInputDialog(null, "Ingrese el ID de venta para procesar la venta y obtener la factura");
         if (input == null) {
             return;
         } else {
@@ -204,8 +226,61 @@ public class GestionOperarios {
             }
         }
         Venta v = ventaProcesada.buscarId(idCliente);
-        System.out.println(v.toString());
+        //crear factura
+        if(v == null){
+           JOptionPane.showMessageDialog(null, "No se encontro el cliente, o no tiene un servicio asociado");
+           return;
+        }
+        int idVenta = v.getIdVenta();
+        java.sql.Date fechaActual = new java.sql.Date(System.currentTimeMillis());
+        double precio = v.getTotal();
+        double iva = precio * 0.13;
+        double total = precio + iva;
+        int idOperario = v.getIdOperario();
+        //obtener nombre del operario
+        Operario operario = obtenerOperario(idOperario);
+        String nombreOperario = operario.getNombre();
+        int idServicio = v.getIdServicio();
+        String descripcion = GestionTrabajos.listaTrabajos.buscarId(idServicio).getDescripcion();
 
+        //agregar factura a la BD
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("INSERT INTO factura (id_cliente, fecha, total, id_operario, id_venta) VALUES (?,?,?,?,?)");
+            preState = conexion.getConsulta();
+
+            preState.setInt(1, idCliente);
+            preState.setDate(2, fechaActual);
+            preState.setDouble(3, total);
+            preState.setInt(4, idOperario);
+            preState.setInt(5, idVenta);
+            preState.executeUpdate();
+            conexion.cerrarConexion();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+        //imprimir factura
+
+        JOptionPane.showMessageDialog(null, "Factura de Servicio\n"
+                + "ID Venta: " + idVenta + "\n"
+                + "Servicio: " + descripcion + "\n"
+                + "Precio: " + precio + "\n"
+                + "Total con I.V.A: " + total + "\n"
+                + "Operario: " + nombreOperario);
+        
+        //mostrar el operario como disponible 
+        operario.setDisponible(true);
+        actualizarBD(operario);
     }
 
     public void OperarioMenu() {
@@ -256,5 +331,43 @@ public class GestionOperarios {
             }
         }
 
+    }
+
+    //buscar operario - PENDIENTE
+    // construir operario desde la BD
+    public Operario obtenerOperario(int idOperario) {
+        PreparedStatement preState = null;
+        Operario operario = new Operario();
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM operario WHERE id_operario = ?");
+            preState = conexion.getConsulta();
+            preState.setInt(1, idOperario);
+            
+            ResultSet rs = preState.executeQuery();
+            if (rs.next()) {
+                String nombre = rs.getString("Nombre");
+                int id = rs.getInt("id_operario");
+                boolean disponible = rs.getBoolean("disponible");
+
+                operario = new Operario(nombre, id, disponible);
+                return operario;
+            }else{
+                JOptionPane.showMessageDialog(null, "Operario no encontrado");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+        return operario;
     }
 }

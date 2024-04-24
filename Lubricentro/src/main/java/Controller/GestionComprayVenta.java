@@ -5,13 +5,11 @@
 package Controller;
 
 import Conexiones.ConexionBD;
-import static Controller.GestionClientesyVehiculos.conexion;
 import ModuloCompraVenta.Cola;
 import ModuloCompraVenta.ColaVenta;
-import java.sql.ResultSet;
+import java.sql.*;
 import Objetos.Producto;
 import ModuloCompraVenta.ColaCompra;
-import ModuloCompraVenta.NodoColaCompra;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -20,6 +18,7 @@ import javax.swing.JOptionPane;
  * @author Melanie Gutierrez
  */
 public class GestionComprayVenta {
+
     public int cantidad = 0;
     public static Cola listaCompra = new Cola();
     public static ColaVenta listaVenta = new ColaVenta();
@@ -43,31 +42,33 @@ public class GestionComprayVenta {
 //            return obtenerIdOperario(); // Recursar para pedir un ID válido nuevamente
 //        }
 //    }
-
     public void realizarCompra(int idProducto) {
-        if(idProducto == 0){
-            JOptionPane.showMessageDialog(null, "No hay productos en el carrito");
+        if (idProducto == 0) {
+            JOptionPane.showMessageDialog(null, "No hay productos en el carrito, agregue un producto antes de realizar la compra");
             return;
         }
         StringBuilder mensaje = new StringBuilder("Productos comprados:\n");
         int idCliente = 0;
         double totalVenta = 0.0;
+        double totalIVA = 0.0;
+        double precio = 0;
 
         while (!carritoCompra.estaVacia()) {
             Producto productoComprado = carritoCompra.atender();
             mensaje.append(productoComprado.getNombre()).append("\n");
-            totalVenta += productoComprado.getPrecio(); // Calculate the running total
+            totalIVA = (productoComprado.getPrecio() * cantidad) * 0.13;
+            totalVenta = (productoComprado.getPrecio() * cantidad) + totalIVA;
+            precio = productoComprado.getPrecio() * cantidad;
         }
 
         // Mostrar lista de clientes registrados
         imprimirClientesRegistrados();
 
         // Solicitar al usuario que seleccione un cliente
-        
         String idClienteInput = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente:");
-        if(idClienteInput == null){
+        if (idClienteInput == null) {
             return;
-        }else{
+        } else {
             try {
                 idCliente = Integer.parseInt(idClienteInput);
             } catch (Exception e) {
@@ -79,12 +80,6 @@ public class GestionComprayVenta {
             return;
         }
 
-        while (!carritoCompra.estaVacia()) {
-            Producto productoComprado = carritoCompra.atender();
-            mensaje.append(productoComprado.getNombre()).append("\n");
-            totalVenta += productoComprado.getPrecio();
-        }
-
         // Registrar la venta en la tabla "venta" (SIN fecha_venta)
         try {
             Producto producto = consultarProductoPorID(idProducto);
@@ -92,7 +87,6 @@ public class GestionComprayVenta {
 
             // Obtener el ID de la factura generada
             // Método para obtener el último ID de factura
-
             // Registrar la venta
             String consultaVenta = "INSERT INTO venta (id_producto, id_cliente, precio, cantidad) VALUES (?, ?, ?, ?)";
             conexion.setConsulta(consultaVenta);
@@ -101,16 +95,14 @@ public class GestionComprayVenta {
             conexion.getConsulta().setInt(2, idCliente);
             conexion.getConsulta().setDouble(3, totalVenta);
             conexion.getConsulta().setInt(4, cantidad);
-            
-
             conexion.getConsulta().executeUpdate();
 
             // Mostrar mensaje de éxito
-            JOptionPane.showMessageDialog(null, mensaje.toString() + "\nTotal: $" + totalVenta, "Compra realizada", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, mensaje.toString() + "\nTotal: " +  precio + "\nTotal con IVA: " + totalVenta + "\nCompra realizada");
 
-            // Actualizar existencias de productos
-            actualizarExistenciasProductos(conexion);
-            
+            // Actualizar existencias de producto
+            actualizarStock(producto.getId(), cantidad);
+
             // Crear la factura
             String consultaFactura = "INSERT INTO factura (id_cliente, fecha, total) VALUES (?, ?, ?)";
             conexion.setConsulta(consultaFactura);
@@ -122,14 +114,10 @@ public class GestionComprayVenta {
             conexion.getConsulta().setInt(1, idCliente);
             conexion.getConsulta().setDate(2, fechaActual);
             conexion.getConsulta().setDouble(3, totalVenta);
-            
-//            conexion.getConsulta().setInt(4, obtenerIdOperario());
 
+//            conexion.getConsulta().setInt(4, obtenerIdOperario());
             // Ejecutar la consulta para crear la factura
             conexion.getConsulta().executeUpdate();
-
-            
-
             // Vaciar el carrito
             carritoCompra.vaciarCarrito();
 
@@ -138,18 +126,6 @@ public class GestionComprayVenta {
             JOptionPane.showMessageDialog(null, "Error al registrar la venta.", "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             conexion.cerrarConexion();
-        }
-    }
-
-    private int obtenerUltimoIdFactura(ConexionBD conexion) throws SQLException {
-        String consulta = "SELECT LAST_INSERT_ID()";
-        conexion.setConsulta(consulta);
-        ResultSet resultado = conexion.getConsulta().executeQuery();
-
-        if (resultado.next()) {
-            return resultado.getInt(1);
-        } else {
-            throw new SQLException("Error al obtener el último ID de factura generado.");
         }
     }
 
@@ -192,14 +168,14 @@ public class GestionComprayVenta {
         int opcion;
         int idProducto = 0;
         do {
-            opcion = Menu.Menu("Menú Compras", "Lubricentro", opciones, "Agregar al carrito");
+            opcion = Menu.Menu("Menú Compras", "Gestion de Compras", opciones, "Agregar al carrito");
             switch (opcion) {
                 case 0:
                     mostrarInventario(); // Mostrar inventario antes de agregar al carrito
                     String idProductoInput = JOptionPane.showInputDialog("Ingrese el ID del producto a agregar al carrito:");
-                    if(idProductoInput == null){
+                    if (idProductoInput == null) {
                         return;
-                    }else{
+                    } else {
                         idProducto = Integer.parseInt(idProductoInput);
                     }
                     agregarProductoCarrito(idProducto);
@@ -223,10 +199,10 @@ public class GestionComprayVenta {
             switch (opcion) {
                 case 0:
                     mostrarInventario(); // Mostrar inventario antes de agregar al carrito
-                     String idProductoInput = JOptionPane.showInputDialog("Ingrese el ID del producto a agregar al carrito:");
-                    if(idProductoInput == null){
+                    String idProductoInput = JOptionPane.showInputDialog("Ingrese el ID del producto a agregar al carrito:");
+                    if (idProductoInput == null) {
                         return;
-                    }else{
+                    } else {
                         idProducto = Integer.parseInt(idProductoInput);
                     }
                     agregarProductoCarrito(idProducto);
@@ -235,7 +211,7 @@ public class GestionComprayVenta {
                     realizarCompra(idProducto);
                     break;
                 case 2:
-                    Lubricentro.Lubricentro.InicioAdmin(); // Volver al menú principal
+                    Lubricentro.Lubricentro.InicioUsuario(); // Volver al menú principal
                     break;
             }
         } while (opcion != opciones.length);
@@ -252,7 +228,7 @@ public class GestionComprayVenta {
             conexion.getConsulta().setInt(1, idProducto);
 
             ResultSet resultado = conexion.getConsulta().executeQuery();
-            while(resultado.next()) {
+            while (resultado.next()) {
                 int idP = resultado.getInt("id_producto");
                 int idCategoria = resultado.getInt("id_categoria");
                 String descripcion = resultado.getString("descripcion");
@@ -264,7 +240,7 @@ public class GestionComprayVenta {
                 // Crear un nuevo objeto Producto con los valores obtenidos de la consulta
                 producto = new Producto(idP, descripcion, detalle, precio, existencias, idCategoria, activo);
                 return producto;
-            } 
+            }
         } catch (SQLException error) {
             error.printStackTrace();
         } finally {
@@ -278,9 +254,9 @@ public class GestionComprayVenta {
         if (producto != null) {
             carritoCompra.agregar(producto);
             String input = JOptionPane.showInputDialog(null, "Ingrese la cantidad que desea: ");
-            if(input == null){
+            if (input == null) {
                 return;
-            }else{
+            } else {
                 try {
                     cantidad = Integer.parseInt(input);
                 } catch (Exception e) {
@@ -328,26 +304,27 @@ public class GestionComprayVenta {
         }
     }
 
-    private void actualizarExistenciasProductos(ConexionBD conexion) {
-        Producto producto;
-        int existenciasActuales;
-
-        while (!carritoCompra.estaVacia()) {
-            producto = carritoCompra.atender();
-            existenciasActuales = producto.getStock(); // Utilizar el método `getStock`
-
-            // Actualizar existencias en la tabla "producto"
-            try {
-                String consultaExistencias = "UPDATE producto SET stock = ? WHERE id_producto = ?";
-                conexion.setConsulta(consultaExistencias); // Usar `setConsulta`
-
-                conexion.getConsulta().setInt(1, existenciasActuales - producto.getStock()); // Restar la cantidad vendida
-                conexion.getConsulta().setInt(2, producto.getId()); // Utilizar el método `getId`
-
-                conexion.getConsulta().executeUpdate();
-            } catch (SQLException error) {
-                error.printStackTrace();
+    private void actualizarStock(int idProducto, int cantidad) {
+        PreparedStatement preState = null;
+        int existencias = 0;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM producto WHERE id_producto = ?");
+            preState = conexion.getConsulta();
+            preState.setInt(1, idProducto);
+            ResultSet rs = preState.executeQuery();
+            while (rs.next()) {
+                existencias = rs.getInt("existencias");
             }
+            //hacer update 
+            int nuevoStock = existencias - cantidad;
+            conexion.setConsulta("UPDATE producto SET existencias = ? WHERE id_producto = ?");
+            preState = conexion.getConsulta();
+            preState.setInt(1, nuevoStock);
+            preState.setInt(2, idProducto);
+            preState.executeUpdate();
+
+        } catch (Exception e) {
         }
     }
 }

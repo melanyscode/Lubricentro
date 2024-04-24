@@ -66,7 +66,7 @@ public class ListaVentas {
         }
         NodoLista aux = inicio;
         while (aux != null) {
-            if (aux.getVenta().getIdCliente() == id) {
+            if (aux.getVenta().getIdVenta() == id) {
                 return aux.getVenta();
             }
             aux = aux.getSiguiente();
