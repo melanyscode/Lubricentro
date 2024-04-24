@@ -38,41 +38,31 @@ public class GestionClientesyVehiculos {
         // Solicitar los datos del cliente al usuario
         String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del cliente:");
         if (nombre == null) { // El usuario presionó cancelar
-            JOptionPane.showMessageDialog(null, "Operación cancelada.", "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
             return; // Salir del método sin hacer más operaciones
         }
 
         String cedula = JOptionPane.showInputDialog("Ingrese la cédula del cliente:");
         if (cedula == null) { // El usuario presionó cancelar
-            JOptionPane.showMessageDialog(null, "Operación cancelada.", "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
             return; // Salir del método sin hacer más operaciones
         }
 
         String modeloVehiculo = JOptionPane.showInputDialog("Ingrese el Modelo del vehículo del cliente:");
         if (modeloVehiculo == null) { // El usuario presionó cancelar
-            JOptionPane.showMessageDialog(null, "Operación cancelada.", "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
             return; // Salir del método sin hacer más operaciones
         }
-
-        // Verificar si el ID del cliente ya existe en la base de datos
-//            boolean existeCliente = consultarExistenciaCliente(idCliente, conexionBD);
-//            if (existeCliente) {
-//                JOptionPane.showMessageDialog(null, "Error: El ID del cliente ya existe en la base de datos.", "Registro de Cliente", JOptionPane.ERROR_MESSAGE);
-//                return; // Salir del método sin hacer más operaciones
-//            }
-        // Si el ID no existe en la base de datos, procedemos a registrar el cliente
         Vehiculo vehiculo = new Vehiculo(modeloVehiculo);
         Cliente cliente = new Cliente(nombre, cedula);
         System.out.println(cliente.toString());
         pilaClientes.apilar(cliente); // Agregar cliente a la pila
         agregarClienteBD(cliente, vehiculo); // Agregar cliente a la base de datos
         JOptionPane.showMessageDialog(null, "Cliente registrado en la pila y en la base de datos: " + cliente, "Registro de Cliente", JOptionPane.INFORMATION_MESSAGE);
-
+        pilaClientes.vaciarPila();
     }
 
     public void ConsultarPilaClientes() {
         StringBuilder resultado = new StringBuilder();
         resultado.append("Contenido de la pila de clientes:\n");
+        agregarBDPila(pilaClientes);
 
         if (!pilaClientes.esVacia()) {
             NodoCliente auxiliar = pilaClientes.getCima();
@@ -85,15 +75,43 @@ public class GestionClientesyVehiculos {
         }
 
         JOptionPane.showMessageDialog(null, resultado.toString(), "Consulta de Pila de Clientes", JOptionPane.INFORMATION_MESSAGE);
+        pilaClientes.vaciarPila();
     }
 
     public void EliminarClientes() {
-        if (!pilaClientes.esVacia()) {
-            pilaClientes.desapilar(); // Llama al método desapilar de la pila
-            JOptionPane.showMessageDialog(null, "Cliente eliminado de la pila correctamente.", "Eliminar Cliente", JOptionPane.INFORMATION_MESSAGE);
+        agregarBDPila(pilaClientes);
+
+        //pedir el ID del cliente a eliminar
+        int id = 0;
+        String input = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente que desea eliminar: ");
+        if (input == null) {
+            pilaClientes.vaciarPila();
+            return;
+
         } else {
-            JOptionPane.showMessageDialog(null, "La pila de clientes está vacía.", "Eliminar Cliente", JOptionPane.WARNING_MESSAGE);
+            try {
+                id = Integer.parseInt(input);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Valor incorrecto, intente de nuevo");
+            }
+
+            if (id != 0) {
+                Cliente cliente = buscarCliente(id);
+                if (cliente != null) {
+                    int opc = JOptionPane.showConfirmDialog(null, "¿Desea eliminar, Cliente ID: " + cliente.getIdCliente() + " Nombre: " + cliente.getNombre() + " Cedula: " + cliente.getCedula());
+                    if (opc == 0) {
+                        eliminarClienteBD(id);
+                        JOptionPane.showMessageDialog(null, "El cliente se ha eliminado satisfactoriamente");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Acción cancelada");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se encontro un cliente asociado con ese ID");
+                }
+
+            }
         }
+        pilaClientes.vaciarPila();
     }
 
     public void Clientes() {
@@ -120,41 +138,12 @@ public class GestionClientesyVehiculos {
 
     ////////SECCION CON BD/////////////
     ///////BE CAREFUL/////////////////
-    private boolean consultarExistenciaCliente(int idCliente, ConexionBD conexion) {
-        boolean existeCliente = false;
-        try {
-            conexion.setConexion(); // Establecer la conexión a la base de datos
-
-            // Preparar la consulta SQL para contar cuántos registros tienen el ID del cliente
-            String consulta = "SELECT COUNT(*) FROM cliente WHERE id_cliente = ?";
-            conexion.setConsulta(consulta);
-            conexion.getConsulta().setInt(1, idCliente);
-
-            // Ejecutar la consulta y obtener el resultado
-            ResultSet resultado = conexion.getResultado();
-            if (resultado.next()) {
-                int count = resultado.getInt(1);
-                existeCliente = count > 0; // Si count > 0, significa que el cliente ya existe en la base de datos
-            }
-        } catch (SQLException error) {
-            JOptionPane.showMessageDialog(null, "Error al consultar la existencia del cliente en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
-            error.printStackTrace();
-        }
-        return existeCliente;
-    }
-
     public void agregarClienteBD(Cliente cliente, Vehiculo vehiculo) {
         ConexionBD conexion = new ConexionBD(); // Crear una nueva instancia de ConexionBD
         PreparedStatement statement = null;
         try {
             conexion.setConexion(); // Establecer la conexión a la base de datos
-
-            // Verificar si el ID del cliente ya existe en la base de datos
-//            boolean existeCliente = consultarExistenciaCliente(cliente.getIdCliente(), conexion);
-//            if (existeCliente) {
-//                JOptionPane.showMessageDialog(null, "Error: El ID del cliente ya existe en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
-//                return; // Salir del método sin hacer más operaciones
-//            
+ 
             conexion.setConsulta("INSERT INTO vehiculo (modelo) VALUES (?)");
             statement = conexion.getConsulta();
             statement.setString(1, vehiculo.getModelo());
@@ -253,4 +242,58 @@ public class GestionClientesyVehiculos {
         }
     }
 
+    public void eliminarClienteBD(int id) {
+
+        PreparedStatement preState = null;
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("DELETE FROM cliente WHERE id_cliente = ?");
+            preState = conexion.getConsulta();
+            preState.setInt(1, id);
+            preState.executeUpdate();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+    }
+
+    public Cliente buscarCliente(int id) {
+        PreparedStatement preState = null;
+        Cliente cliente = new Cliente();
+        try {
+            conexion.setConexion();
+            conexion.setConsulta("SELECT * FROM cliente WHERE id_cliente = ?");
+            preState = conexion.getConsulta();
+            preState.setInt(1, id);
+            ResultSet rs = preState.executeQuery();
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                String cedula = rs.getString("cedula");
+                int idCliente = rs.getInt("id_cliente");
+                return cliente = new Cliente(nombre, cedula, idCliente);
+
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+        } finally {
+            try {
+                if (preState != null) {
+                    preState.close();
+                }
+                conexion.cerrarConexion();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
+            }
+        }
+        return null;
+    }
 }

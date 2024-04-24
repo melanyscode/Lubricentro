@@ -66,7 +66,7 @@ public class TrabajoRealizado {
 
     @Override
     public String toString() {
-        return "Trabajo Disponibles" + " ID: " + id + ", Descripcion: " + descripcion + ", Precio: " + precio + ", Activo: " + activo;
+        return "Trabajo Disponibles" + " ID: " + id + ", Descripcion: " + descripcion + ", Precio: " + precio;
     }
 
 }

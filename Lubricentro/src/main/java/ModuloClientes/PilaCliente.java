@@ -68,4 +68,8 @@ public class PilaCliente {
         }
         return null;
     }
+    
+    public void vaciarPila(){
+        cima = null;
+    }
 }

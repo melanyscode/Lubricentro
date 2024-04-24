@@ -50,7 +50,8 @@ public class GestionOperarios {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente");
         if (idInput == null) {
-            OperarioMenu();
+             colaDisponible.vaciarCola();
+            return;
         } else {
             try {
                 id = Integer.parseInt(idInput);
@@ -177,10 +178,13 @@ public class GestionOperarios {
                         GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 5:
+                        GestionTrabajos.listaTrabajos.vaciarLista();
+                        colaDisponible.vaciarCola();
                         OperarioMenu();
                         break;
                 }
                 ventaEnCola.vaciarCola();
+                 colaDisponible.vaciarCola();
             } else {
                 JOptionPane.showMessageDialog(null, "El cliente no tiene un vehiculo asociado, intentelo de nuevo");
             }
@@ -211,7 +215,7 @@ public class GestionOperarios {
         ventaProcesada.agregarBDaLista();
         System.out.println(ventaProcesada.toString());
         int idCliente = 0;
-        String input = JOptionPane.showInputDialog(null, "Ingrese el id de Cliente para procesar la venta y obtener la factura");
+        String input = JOptionPane.showInputDialog(null, "Ingrese el ID de venta para procesar la venta y obtener la factura");
         if (input == null) {
             return;
         } else {
