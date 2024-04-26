@@ -226,7 +226,8 @@ public class GestionOperarios {
         GestionTrabajos.listaTrabajos.agregarListaArbol(GestionTrabajos.listaTrabajos);
 
         ventaProcesada.agregarBDaLista();
-        System.out.println(ventaProcesada.toString());
+        ventaProcesada.toString();
+        JOptionPane.showMessageDialog(null, ventaProcesada.toString());
         int idCliente = 0;
         String input = JOptionPane.showInputDialog(null, "Ingrese el ID de venta para procesar la venta y obtener la factura");
         if (input == null) {
