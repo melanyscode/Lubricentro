@@ -65,12 +65,12 @@ public class ListaVentas {
             return null;
         }
         NodoLista aux = inicio;
-        while (aux != null) {
+        do {
             if (aux.getVenta().getIdVenta() == id) {
                 return aux.getVenta();
             }
             aux = aux.getSiguiente();
-        }
+        } while (aux != inicio);
         return null;
     }
 
@@ -142,7 +142,7 @@ public class ListaVentas {
         } else {
             NodoLista aux = inicio;
             do {
-                mensaje += aux.getVenta().toString();
+                mensaje += "ID Venta: " + aux.getVenta().getIdVenta() + ", Total: " + aux.getVenta().getTotal() + ", ID Servicio: " + aux.getVenta().getIdServicio() + ", ID Cliente: " + aux.getVenta().getIdCliente() + "\n";
                 aux = aux.getSiguiente();
             } while (aux != inicio);
         }

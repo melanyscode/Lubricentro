@@ -37,7 +37,6 @@ public class Grafo {
             nodos[i] = new NodoGrafo(i);
 
         }
-
     }
 
     public void agregarRelacion(int idProducto, int idSubcategoria) {
@@ -45,7 +44,6 @@ public class Grafo {
 
         matrizAdyacencia[idProducto][idSubcategoria] = 1;
         
-
     }
 
     public String imprimirMatrizAdyacencia() {

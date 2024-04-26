@@ -21,6 +21,7 @@ public class GestionProductos {
     public static ListaCircular listaProductos = new ListaCircular();
     public static Grafo grafoRelaciones = new Grafo();
     public static Arbol arbolProductos = new Arbol();
+    public static Arbol arbolPCambiado = new Arbol();
     Producto p = new Producto();
     ConexionBD conexion = new ConexionBD();
 
@@ -92,6 +93,7 @@ public class GestionProductos {
         listaProductos.agregar(p1);
         //agregar lista a la bd 
         listaProductos.agregarListaBD(listaProductos);
+        listaProductos.vaciarLista();
         JOptionPane.showMessageDialog(null, "Producto agregado al inventario exitosamente");
     }
 
@@ -113,13 +115,18 @@ public class GestionProductos {
             listaProductos.agregarBDaLista(); // metodo de lista circular lee toda la info de la base de datos y la agrega a la lista 
             listaProductos.agregarListaArbol(listaProductos); //agregar lista a una estructura de arbol para poder buscar mas rapido el id que se esta buscando en vez de recorrer todos los nodos de la lista
             Producto p = arbolProductos.buscarProducto(id); // como toda la info de la BD ahora esta en la lista se puede usar el metodo de buscar por id en la lista
-            JOptionPane.showMessageDialog(null, p.toString());
+            if (p != null) {
+                JOptionPane.showMessageDialog(null, p.toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontro ningun producto asociado con ese ID");
+            }
             listaProductos.vaciarLista();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e);
         } finally {
             conexion.cerrarConexion();
+            listaProductos.vaciarLista();
         }
     }
 
@@ -157,15 +164,18 @@ public class GestionProductos {
                 nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto:", p.getNombre());
                 //control de botones de joptionpane, si es null (cuando se da en el boton de "cancelar" se vuelve al menu de productos 
                 if (nombre == null) {
+                    listaProductos.vaciarLista();
                     return;
                 }
                 descripcion = JOptionPane.showInputDialog(null, "Ingrese una pequeña descripcion del producto", p.getDescripcion());
                 if (descripcion == null) {
+                    listaProductos.vaciarLista();
                     return;
                 }
                 String input = JOptionPane.showInputDialog(null, "Ingrese el precio del producto", p.getPrecio());
                 //control de botones (cancelar) en este se agrega else para para hacer el parse, en un try catch para identificar si errores de formato
                 if (input == null) {
+                    listaProductos.vaciarLista();
                     return;
                 } else {
                     try {
@@ -176,6 +186,7 @@ public class GestionProductos {
                 }
                 String stockInput = JOptionPane.showInputDialog(null, "Ingrese la cantidad de existencias", p.getStock());
                 if (stockInput == null) {
+                    listaProductos.vaciarLista();
                     return;
                 } else {
                     try {
@@ -197,6 +208,7 @@ public class GestionProductos {
             //actualizar producto en la lista
             p = new Producto(nombre, descripcion, precio, stock, activo);
             listaProductos.actualizar(id, p);
+            listaProductos.vaciarLista();
             //actualizar productos en la tabla de BD
             conexion.setConsulta("UPDATE producto SET descripcion = ?, detalle = ?, precio = ?, existencias = ?, activo = ? WHERE id_producto = ?");
             preState = conexion.getConsulta();
@@ -212,10 +224,11 @@ public class GestionProductos {
             listaProductos.vaciarLista();
             listaProductos.agregarBDaLista();
             //agregar lista al arbol para mejor eficiencia a la hora buscar por id
-            listaProductos.agregarListaArbol(listaProductos);
-            Producto pActualizado = arbolProductos.buscarProducto(id);
+            listaProductos.agregarListaArbol2(listaProductos);
+            Producto pActualizado = arbolPCambiado.buscarProducto(id);
             JOptionPane.showMessageDialog(null, "Productos actulizado: " + pActualizado.toString());
             conexion.cerrarConexion();
+            listaProductos.vaciarLista();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e);
@@ -225,6 +238,7 @@ public class GestionProductos {
                     preState.close();
                 }
                 conexion.cerrarConexion();
+                listaProductos.vaciarLista();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
             }
@@ -260,6 +274,12 @@ public class GestionProductos {
             //agregar lista a un arbol para recorrer de manera mas sencilla los productos
             listaProductos.agregarListaArbol(listaProductos);
             Producto p = arbolProductos.buscarProducto(id);
+            if(p == null){
+                JOptionPane.showMessageDialog(null, "No existe un producto asociado con ese ID");
+                listaProductos.vaciarLista();
+                
+                return;
+            }
             int input = JOptionPane.showConfirmDialog(null, "¿Desea eliminar " + p.toString() + "?", null, JOptionPane.YES_NO_OPTION);
             if (input == 0) {
                 listaProductos.eliminar(id);
@@ -275,22 +295,25 @@ public class GestionProductos {
                 preState.executeUpdate();
 
                 JOptionPane.showMessageDialog(null, "El producto fue eliminado satisfactoriamente");
-
+                
             } else {
                 JOptionPane.showMessageDialog(null, "Eliminacion cancelada");
                 conexion.cerrarConexion();
                 return;
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e);
+            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
         } finally {
             conexion.cerrarConexion();
+            listaProductos.vaciarLista();
         }
+        listaProductos.vaciarLista();
     }
 
     public void mostrar() {
         listaProductos.agregarBDaLista();
         JOptionPane.showMessageDialog(null, listaProductos.toString());
+        listaProductos.vaciarLista();
     }
 
     public void mostrarCategoriasProductos() {
@@ -301,12 +324,17 @@ public class GestionProductos {
 
         //agregar lista a el grafo para imprimirlo 
         int size = listaProductos.size();
-        System.out.println(size);
-        grafoRelaciones = new Grafo(size + 1);
-        listaProductos.agregarListaGrafo();
+        if (size != 0) {
+            grafoRelaciones = new Grafo(120);
+            listaProductos.agregarListaGrafo();
+        } else {
+            JOptionPane.showMessageDialog(null, "La lista esta vacía");
+            return;
+        }
 
         //imprimir con el grafo
         JOptionPane.showMessageDialog(null, "Inventario Categorias\n" + grafoRelaciones.imprimirMatrizAdyacencia());
+        listaProductos.vaciarLista();
     }
 
     public void menuProductos() {
@@ -337,7 +365,7 @@ public class GestionProductos {
     }
 
     public void menuProductosU() {
-        String[] opcs = {"Mostrar", "Buscar", "Volver"};
+        String[] opcs = {"Mostrar", "Categorías", "Buscar", "Volver"};
         int opc;
         do {
             opc = Menu.Menu("Inventario Productos", "Elija una opción", opcs, "Agregar");
@@ -346,9 +374,12 @@ public class GestionProductos {
                     mostrar();
                     break;
                 case 1:
+                    mostrarCategoriasProductos();
+                    break;
+                case  2:
                     buscar();
                     break;
-                case 2:
+                case 3:
                     Lubricentro.Lubricentro.InicioUsuario();
             }
         } while (opc != opcs.length);

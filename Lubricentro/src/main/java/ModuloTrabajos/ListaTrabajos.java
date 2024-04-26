@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
  * @author Melanie Gutierrez
  */
 public class ListaTrabajos {
+
     ConexionBD conexion = new ConexionBD();
     Nodo inicio;
 
@@ -32,19 +33,20 @@ public class ListaTrabajos {
         return inicio == null;
     }
 
-     public int size() {
+    public int size() {
         if (inicio == null) {
             return 0;
         } else {
-            int tamaño = 1;
-            Nodo nodoActual = inicio.getSiguiente();
-            while (nodoActual != inicio) {
-                tamaño++;
+            int size = 1;
+            Nodo nodoActual = inicio;
+            do {
+                size++;
                 nodoActual = nodoActual.getSiguiente();
-            }
-            return tamaño;
+            } while (nodoActual != inicio);
+            return size;
         }
     }
+
     public void agregar(TrabajoRealizado t) {
         Nodo nuevo = new Nodo(t);
 
@@ -68,12 +70,12 @@ public class ListaTrabajos {
             return null;
         }
         Nodo aux = inicio;
-        while (aux != null) {
+        do {
             if (aux.getTrabajo().getId() == id) {
                 return aux.getTrabajo();
             }
             aux = aux.getSiguiente();
-        }
+        } while (aux != inicio);
         return null;
     }
 
@@ -107,16 +109,6 @@ public class ListaTrabajos {
     }
 
     public void vaciarLista() {
-
-        Nodo actual = inicio;
-        Nodo temp;
-        do {
-            temp = actual;
-            actual = actual.getSiguiente();
-            temp.setAnterior(null);
-            temp.setSiguiente(null);
-
-        } while (actual != inicio);
         inicio = null;
     }
 
@@ -125,15 +117,14 @@ public class ListaTrabajos {
             JOptionPane.showMessageDialog(null, "No hay productos en el inventario");
         }
         Nodo aux = inicio;
-        while (aux != inicio) {
+        do {
             if (aux.getTrabajo().getId() == id) {
                 aux.setTrabajo(t);
-                JOptionPane.showMessageDialog(null, "El Prodcuto con ID: " + id + " ha sido modificado");
-            } else {
-                JOptionPane.showMessageDialog(null, "El producto con ID: " + id + " no se encuentra en el inventario");
+                JOptionPane.showMessageDialog(null, "El Servicio con ID: " + id + " ha sido modificado");
+                break;
             }
             aux = aux.getSiguiente();
-        }
+        } while (aux != inicio);
 
     }
 
@@ -159,7 +150,7 @@ public class ListaTrabajos {
         PreparedStatement preState = null;
         try {
             conexion.setConexion();
-            conexion.setConsulta("INSERT INTO servicio (id_servicio, descripcion, precio, activo) VALUES (?,?,?,?)");
+            conexion.setConsulta("INSERT INTO servicio (id_servicio, descripcion, precio, disponible) VALUES (?,?,?,?)");
             preState = conexion.getConsulta();
 
             Nodo aux = inicio;
@@ -227,11 +218,11 @@ public class ListaTrabajos {
 //                aux = aux.getSiguiente();
 //            } while (aux != inicio);
 //    }
-    
+
     //metodo para mover la lista a una estructura de arbol
-    public void agregarListaArbol(ListaTrabajos lista){
+    public void agregarListaArbol(ListaTrabajos lista) {
         Nodo aux = inicio;
-        do {            
+        do {
             TrabajoRealizado t = aux.getTrabajo();
             GestionTrabajos.arbolTrabajos.insertar(t);
             aux = aux.getSiguiente();

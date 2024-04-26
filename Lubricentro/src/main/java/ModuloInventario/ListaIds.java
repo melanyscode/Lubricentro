@@ -9,37 +9,40 @@ package ModuloInventario;
  * @author Melanie Gutierrez
  */
 public class ListaIds {
+
     NodoListaIds cabeza;
 
     public ListaIds() {
         this.cabeza = null;
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return cabeza == null;
     }
-    public void insetar(int id){
-        if(isEmpty()){
+
+    public void insetar(int id) {
+        if (isEmpty()) {
             cabeza = new NodoListaIds(id);
-        }else{
+        } else {
             NodoListaIds nuevo = new NodoListaIds(id);
             nuevo.setSiguiente(cabeza);
             cabeza = nuevo;
         }
-        
+
     }
-    public int buscarId(int id){
-        if(isEmpty()){
+
+    public int buscarId(int id) {
+        if (isEmpty()) {
             return 0;
         }
-        NodoListaIds aux =  cabeza;
-        while(aux != null){
-            if(aux.getValor() == id){
+        NodoListaIds aux = cabeza;
+        do {
+            if (aux.getValor() == id) {
                 return id;
             }
             aux = aux.getSiguiente();
-        }
+        } while (aux != cabeza);
         return 0;
     }
-    
+
 }
