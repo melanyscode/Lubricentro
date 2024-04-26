@@ -141,23 +141,27 @@ public class GestionClientesyVehiculos {
     public void agregarClienteBD(Cliente cliente, Vehiculo vehiculo) {
         ConexionBD conexion = new ConexionBD(); // Crear una nueva instancia de ConexionBD
         PreparedStatement statement = null;
+        int idVehiculo = 0;
+        int idCliente = 0;
         try {
             conexion.setConexion(); // Establecer la conexión a la base de datos
- 
+
             conexion.setConsulta("INSERT INTO vehiculo (modelo) VALUES (?)");
             statement = conexion.getConsulta();
             statement.setString(1, vehiculo.getModelo());
             statement.executeUpdate();
 
             //obtener el id del vehiculo
-            conexion.setConsulta("SELECT * FROM vehiculo where modelo = ?");
+            conexion.setConsulta("SELECT * FROM vehiculo WHERE modelo = ?");
             statement = conexion.getConsulta();
             statement.setString(1, vehiculo.getModelo());
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                vehiculo.setIdVehiculo(rs.getInt("id_vehiculo"));
+                idVehiculo = rs.getInt("id_vehiculo");
+
             }
+            cliente.setIdVehiculo(idVehiculo);
 
             // Preparar la consulta SQL para insertar el cliente en la tabla
             String consulta = "INSERT INTO cliente (nombre, cedula, id_vehiculo) VALUES (?, ?, ?)";
@@ -165,15 +169,24 @@ public class GestionClientesyVehiculos {
             statement = conexion.getConsulta();
             statement.setString(1, cliente.getNombre());
             statement.setString(2, cliente.getCedula());
-            statement.setInt(3, vehiculo.getIdVehiculo());
+            statement.setInt(3, idVehiculo);
 
             // Ejecutar la consulta para insertar el cliente en la tabla
-            int filasAfectadas = statement.executeUpdate();
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Cliente agregado a la base de datos correctamente.", "Cliente Agregado", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al agregar el cliente a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            statement.executeUpdate();
+
+            //obtener ID
+            String consulta2 = "SELECT * FROM cliente WHERE id_vehiculo = ?";
+            conexion.setConsulta(consulta2);
+            statement = conexion.getConsulta();
+            statement.setInt(1, idVehiculo);
+
+            ResultSet rs1 = statement.executeQuery();
+            while (rs1.next()) {
+                idCliente = rs1.getInt("id_vehiculo");
             }
+            cliente.setIdCliente(idCliente);
+//           
+
         } catch (SQLException error) {
             JOptionPane.showMessageDialog(null, "Error al agregar el cliente a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
             error.printStackTrace();

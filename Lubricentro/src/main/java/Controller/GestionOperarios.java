@@ -6,6 +6,8 @@ package Controller;
 
 import Conexiones.ConexionBD;
 import static Lubricentro.Lubricentro.InicioAdmin;
+import static Lubricentro.Lubricentro.InicioUsuario;
+import static Lubricentro.Lubricentro.isAdmin;
 
 import ModuloOperario.ColaOperario;
 import ModuloOperario.ColaVenta;
@@ -50,7 +52,9 @@ public class GestionOperarios {
         int id = 0;
         String idInput = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente");
         if (idInput == null) {
-             colaDisponible.vaciarCola();
+            colaTrabajos.vaciarCola();
+            colaDisponible.vaciarCola();
+            GestionTrabajos.listaTrabajos.vaciarLista();
             return;
         } else {
             try {
@@ -93,6 +97,8 @@ public class GestionOperarios {
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta);
                         ventaEnCola.agregarColaBD();
+                        colaDisponible.vaciarCola();
+                        colaTrabajos.vaciarCola();
                         GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 1:
@@ -113,6 +119,8 @@ public class GestionOperarios {
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta2);
                         ventaEnCola.agregarColaBD();
+                        colaTrabajos.vaciarCola();
+                        colaDisponible.vaciarCola();
                         GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 2:
@@ -133,6 +141,8 @@ public class GestionOperarios {
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta3);
                         ventaEnCola.agregarColaBD();
+                        colaTrabajos.vaciarCola();
+                        colaDisponible.vaciarCola();
                         GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 3:
@@ -153,6 +163,8 @@ public class GestionOperarios {
                                 + "Precio: " + precio);
                         ventaEnCola.insertar(venta4);
                         ventaEnCola.agregarColaBD();
+                        colaDisponible.vaciarCola();
+                        colaTrabajos.vaciarCola();
                         GestionTrabajos.listaTrabajos.vaciarLista();
                         break;
                     case 4:
@@ -160,7 +172,6 @@ public class GestionOperarios {
                         idServicio = 5;
                         idCliente = c.getIdCliente();
                         precio = t5.getPrecio();
-                        System.out.println(precio);
                         Operario o5 = colaDisponible.desencolar();
                         idOperario = o5.getIdOperario();
                         o5.setDisponible(false);
@@ -175,16 +186,20 @@ public class GestionOperarios {
                         //guardar venta en cola de espera 
                         ventaEnCola.insertar(venta5);
                         ventaEnCola.agregarColaBD();
+                        colaTrabajos.vaciarCola();
                         GestionTrabajos.listaTrabajos.vaciarLista();
+                        colaDisponible.vaciarCola();
                         break;
                     case 5:
                         GestionTrabajos.listaTrabajos.vaciarLista();
+                        colaTrabajos.vaciarCola();
+                        colaDisponible.vaciarCola();
                         colaDisponible.vaciarCola();
                         OperarioMenu();
                         break;
                 }
                 ventaEnCola.vaciarCola();
-                 colaDisponible.vaciarCola();
+                colaDisponible.vaciarCola();
             } else {
                 JOptionPane.showMessageDialog(null, "El cliente no tiene un vehiculo asociado, intentelo de nuevo");
             }
@@ -201,11 +216,9 @@ public class GestionOperarios {
         colaDisponible.vaciarCola();
         colaTrabajos.vaciarCola();
     }
-        
 
     public void FacturaID() {
         ///
-        ///FALTA POR TERMINAR NO TOCAR
         ///
         ///
         //lista de trabajos para leer el tipo de servicio que se le dio al cliente 
@@ -217,6 +230,9 @@ public class GestionOperarios {
         int idCliente = 0;
         String input = JOptionPane.showInputDialog(null, "Ingrese el ID de venta para procesar la venta y obtener la factura");
         if (input == null) {
+            ventaProcesada.vaciarLista();
+            GestionTrabajos.listaTrabajos.vaciarLista();
+            colaTrabajos.vaciarCola();
             return;
         } else {
             try {
@@ -227,9 +243,12 @@ public class GestionOperarios {
         }
         Venta v = ventaProcesada.buscarId(idCliente);
         //crear factura
-        if(v == null){
-           JOptionPane.showMessageDialog(null, "No se encontro el cliente, o no tiene un servicio asociado");
-           return;
+        if (v == null) {
+            ventaProcesada.vaciarLista();
+            colaDisponible.vaciarCola();
+            colaTrabajos.vaciarCola();
+            JOptionPane.showMessageDialog(null, "No se encontro la venta, o no tiene un servicio asociado");
+            return;
         }
         int idVenta = v.getIdVenta();
         java.sql.Date fechaActual = new java.sql.Date(System.currentTimeMillis());
@@ -277,10 +296,14 @@ public class GestionOperarios {
                 + "Precio: " + precio + "\n"
                 + "Total con I.V.A: " + total + "\n"
                 + "Operario: " + nombreOperario);
-        
+
         //mostrar el operario como disponible 
+        colaDisponible.vaciarCola();
         operario.setDisponible(true);
         actualizarBD(operario);
+        ventaProcesada.vaciarLista();
+        colaTrabajos.vaciarCola();
+        GestionTrabajos.listaTrabajos.vaciarLista();
     }
 
     public void OperarioMenu() {
@@ -299,7 +322,11 @@ public class GestionOperarios {
                     FacturaID();
                     break;
                 case 3:
-                    InicioAdmin();
+                    if (isAdmin) {
+                        InicioAdmin();
+                    } else {
+                        InicioUsuario();
+                    }
                     break;
             }
         } while (opc != opcs.length);
@@ -343,7 +370,7 @@ public class GestionOperarios {
             conexion.setConsulta("SELECT * FROM operario WHERE id_operario = ?");
             preState = conexion.getConsulta();
             preState.setInt(1, idOperario);
-            
+
             ResultSet rs = preState.executeQuery();
             if (rs.next()) {
                 String nombre = rs.getString("Nombre");
@@ -352,7 +379,7 @@ public class GestionOperarios {
 
                 operario = new Operario(nombre, id, disponible);
                 return operario;
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Operario no encontrado");
             }
 

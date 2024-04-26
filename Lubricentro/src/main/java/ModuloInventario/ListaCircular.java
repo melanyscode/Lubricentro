@@ -29,26 +29,27 @@ public class ListaCircular {
         return inicio == null;
     }
 
-     public int size() {
+    public int size() {
         if (inicio == null) {
             return 0;
         } else {
-            int tamaño = 1;
-            NodoLista nodoActual = inicio.getSiguiente();
-            while (nodoActual != inicio) {
-                tamaño++;
-                nodoActual = nodoActual.getSiguiente();
-            }
-            return tamaño;
+            int size = 0;
+            NodoLista actual = inicio;
+            do {
+                size++;
+                actual = actual.getSiguiente();
+            } while (actual != inicio && actual != null);
+            return size;
         }
     }
+
     public void agregar(Producto p) {
         NodoLista nuevo = new NodoLista(p);
 
         if (isEmpty()) {
             inicio = nuevo;
-            nuevo.setSiguiente(nuevo);
-            nuevo.setAnterior(nuevo);
+            nuevo.setSiguiente(inicio);
+            nuevo.setAnterior(inicio);
         } else {
             NodoLista ultimo = inicio.getAnterior();
             ultimo.setSiguiente(nuevo);
@@ -65,12 +66,12 @@ public class ListaCircular {
             return null;
         }
         NodoLista aux = inicio;
-        while (aux != null) {
+        do {
             if (aux.getProducto().getId() == id) {
                 return aux.getProducto();
             }
             aux = aux.getSiguiente();
-        }
+        } while (aux != inicio);
         return null;
     }
 
@@ -104,16 +105,6 @@ public class ListaCircular {
     }
 
     public void vaciarLista() {
-
-        NodoLista actual = inicio;
-        NodoLista temp;
-        do {
-            temp = actual;
-            actual = actual.getSiguiente();
-            temp.setAnterior(null);
-            temp.setSiguiente(null);
-
-        } while (actual != inicio);
         inicio = null;
     }
 
@@ -142,7 +133,7 @@ public class ListaCircular {
         } else {
             NodoLista aux = inicio;
             do {
-                mensaje += aux.getProducto().toString();
+                mensaje += aux.getProducto().toString() + "\n";
                 aux = aux.getSiguiente();
             } while (aux != inicio);
         }
@@ -218,8 +209,9 @@ public class ListaCircular {
             }
         }
     }
-    public void agregarListaGrafo(){
-         NodoLista aux = inicio;
+
+    public void agregarListaGrafo() {
+        NodoLista aux = inicio;
             do {
                 int idProducto = aux.getProducto().getId();
                 int categoria = aux.getProducto().getCategoriaId();
@@ -227,13 +219,14 @@ public class ListaCircular {
                 aux = aux.getSiguiente();
             } while (aux != inicio);
     }
+
     //metodo para mover la lista a una estructura de arbol
-    public void agregarListaArbol(ListaCircular lista){
+    public void agregarListaArbol(ListaCircular lista) {
         NodoLista aux = inicio;
-        do {            
+        do {
             Producto p = aux.getProducto();
             GestionProductos.arbolProductos.insertar(p);
             aux = aux.getSiguiente();
         } while (aux != inicio);
-    } 
+    }
 }

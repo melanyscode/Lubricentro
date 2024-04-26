@@ -55,6 +55,7 @@ public class GestionTrabajos {
             listaTrabajos.agregar(t);
             listaTrabajos.agregarListaBD(listaTrabajos);
             conexion.cerrarConexion();
+            JOptionPane.showMessageDialog(null, "Trabajo ingresado satisfactoriamente");
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta: " + e.getMessage());
@@ -116,8 +117,12 @@ public class GestionTrabajos {
                 listaTrabajos.actualizar(id, t);
 
                 //actualizar bd 
-                conexion.setConsulta("UPDATE servicio SET descripcion= ?, precio = ?, activo = ? WHERE id_servicio = ?");
+                conexion.setConsulta("UPDATE servicio SET descripcion= ?, precio = ?, disponible = ? WHERE id_servicio = ?");
                 preState = conexion.getConsulta();
+                preState.setString(1, descripcion);
+                preState.setDouble(2, precio);
+                preState.setBoolean(3, activo);
+                preState.setInt(4, id);
                 preState.executeUpdate();
                 listaTrabajos.vaciarLista();
                 listaTrabajos.agregarBDaLista();
@@ -125,6 +130,7 @@ public class GestionTrabajos {
                 JOptionPane.showMessageDialog(null, "Servicio actualizado: \n"
                         + trabajo.toString());
                 conexion.cerrarConexion();
+                listaTrabajos.vaciarLista();
 
             } else {
                 JOptionPane.showMessageDialog(null, "No se encontró un servicio que coincida con ese número de ID");
@@ -149,6 +155,7 @@ public class GestionTrabajos {
         //mostrart los servicios disponibles 
         listaTrabajos.agregarBDaLista();
         JOptionPane.showMessageDialog(null, listaTrabajos.toString());
+        listaTrabajos.vaciarLista();
 
     }
 
@@ -174,21 +181,15 @@ public class GestionTrabajos {
     }
 
     public void menuTrabajosU() {
-        String[] opcs = {"Agregar", "Eliminar", "Actualizar", "Buscar", "Mostrar", "Volver"};
+        String[] opcs = {"Mostrar", "Volver"};
         int opc;
         do {
             opc = Menu.Menu("Inventario de Reparaciones", "Elija una opción", opcs, "Agregar");
             switch (opc) {
                 case 0:
-                    agregar();
-                    break;
-                case 1:
-                    actualizar();
-                    break;
-                case 2:
                     mostrar();
                     break;
-                case 3:
+                case 1:
                     Lubricentro.Lubricentro.InicioUsuario();
             }
         } while (opc != opcs.length);

@@ -65,12 +65,12 @@ public class ListaVentas {
             return null;
         }
         NodoLista aux = inicio;
-        while (aux != null) {
+        do {
             if (aux.getVenta().getIdVenta() == id) {
                 return aux.getVenta();
             }
             aux = aux.getSiguiente();
-        }
+        } while (aux != inicio);
         return null;
     }
 
