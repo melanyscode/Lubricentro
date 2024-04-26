@@ -21,6 +21,7 @@ public class GestionProductos {
     public static ListaCircular listaProductos = new ListaCircular();
     public static Grafo grafoRelaciones = new Grafo();
     public static Arbol arbolProductos = new Arbol();
+    public static Arbol arbolPCambiado = new Arbol();
     Producto p = new Producto();
     ConexionBD conexion = new ConexionBD();
 
@@ -207,6 +208,7 @@ public class GestionProductos {
             //actualizar producto en la lista
             p = new Producto(nombre, descripcion, precio, stock, activo);
             listaProductos.actualizar(id, p);
+            listaProductos.vaciarLista();
             //actualizar productos en la tabla de BD
             conexion.setConsulta("UPDATE producto SET descripcion = ?, detalle = ?, precio = ?, existencias = ?, activo = ? WHERE id_producto = ?");
             preState = conexion.getConsulta();
@@ -222,8 +224,8 @@ public class GestionProductos {
             listaProductos.vaciarLista();
             listaProductos.agregarBDaLista();
             //agregar lista al arbol para mejor eficiencia a la hora buscar por id
-            listaProductos.agregarListaArbol(listaProductos);
-            Producto pActualizado = arbolProductos.buscarProducto(id);
+            listaProductos.agregarListaArbol2(listaProductos);
+            Producto pActualizado = arbolPCambiado.buscarProducto(id);
             JOptionPane.showMessageDialog(null, "Productos actulizado: " + pActualizado.toString());
             conexion.cerrarConexion();
             listaProductos.vaciarLista();

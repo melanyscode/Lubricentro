@@ -229,4 +229,12 @@ public class ListaCircular {
             aux = aux.getSiguiente();
         } while (aux != inicio);
     }
+    public void agregarListaArbol2(ListaCircular lista) {
+        NodoLista aux = inicio;
+        do {
+            Producto p = aux.getProducto();
+            GestionProductos.arbolPCambiado.insertar(p);
+            aux = aux.getSiguiente();
+        } while (aux != inicio);
+    }
 }

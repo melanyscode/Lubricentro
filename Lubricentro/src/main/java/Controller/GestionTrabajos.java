@@ -188,6 +188,7 @@ public class GestionTrabajos {
                     break;
                 case 1:
                     Lubricentro.Lubricentro.InicioUsuario();
+                    break;
             }
         } while (opc != opcs.length);
     }
