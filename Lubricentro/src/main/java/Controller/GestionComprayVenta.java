@@ -83,6 +83,10 @@ public class GestionComprayVenta {
         // Registrar la venta en la tabla "venta" (SIN fecha_venta)
         try {
             Producto producto = consultarProductoPorID(idProducto);
+            if(producto == null){
+                JOptionPane.showMessageDialog(null, "No existe un producto con ese ID");
+                return;
+            }
             conexion.setConexion();
 
             // Obtener el ID de la factura generada
@@ -219,7 +223,7 @@ public class GestionComprayVenta {
 ///BD/////
 
     public Producto consultarProductoPorID(int idProducto) {
-        Producto producto = new Producto();
+        Producto producto = null;
         try {
             conexion.setConexion();
 
